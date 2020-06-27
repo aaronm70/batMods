@@ -1,0 +1,25 @@
+Package: batMods
+Type: Package
+Title: fitsSEIR
+Version: 0.1.0
+Author: AaronM
+Maintainer: AaronM <alm204@cam.ac.uk>
+Description: For fitting SEIR model to bat data
+License: 
+Encoding: UTF-8
+Imports:
+    dplyr,
+    odin,
+    lubridate,
+    readxl,
+    coda,
+    mnormt,
+    parallel,
+    R.utils,
+    tidyr,
+    mgcv,
+    magrittr
+Remotes: richfitz/odin
+RoxygenNote: 6.1.99.9001
+    
+ 

@@ -1,0 +1,17 @@
+﻿ModelNum,ModelType,zeta,EnvOsc,GammaVer,SigmaVer,BetaVer,Rho,Epsilon,Omega,lFunc,assump,envOscType,birthType,betaFX,chain
+1,SILI,T,F,0,1,2,1,1,0,std,EI,0,noImmune,1,1
+2,SILI,T,F,0,1,2,1,1,0,std,EI,0,immune,1,1
+3,SILI,T,T,0,1,2,1,1,0,Osc,EI,1,noImmune,1,1
+4,SILI,T,T,0,1,2,1,1,0,Osc,EI,1,immune,1,1
+5,SIR,T,F,2,1,1,0,0,0,std,IR,0,immune,1,1
+6,SIR,T,T,2,1,1,0,0,0,Osc,IR,1,immune,1,1
+7,SIRS,T,F,2,1,2,0,0,1,std,IR,0,immune,1,1
+8,SIRS,T,T,2,1,2,0,0,1,Osc,IR,1,immune,1,1
+9,SILI,T,F,0,1,2,1,1,0,std,EI,0,noImmune,1,2
+10,SILI,T,F,0,1,2,1,1,0,std,EI,0,immune,1,2
+11,SILI,T,T,0,1,2,1,1,0,Osc,EI,1,noImmune,1,2
+12,SILI,T,T,0,1,2,1,1,0,Osc,EI,1,immune,1,2
+13,SIR,T,F,2,1,1,0,0,0,std,IR,0,immune,1,2
+14,SIR,T,T,2,1,1,0,0,0,Osc,IR,1,immune,1,2
+15,SIRS,T,F,2,1,2,0,0,1,std,IR,0,immune,1,2
+16,SIRS,T,T,2,1,2,0,0,1,Osc,IR,1,immune,1,2
