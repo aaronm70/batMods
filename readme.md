@@ -48,7 +48,7 @@ binoial distributions, see suppplementary materials for full details
     Odin package.
 
   - The model and fitting methods are described in modelMethods.html
-    <https://github.com/aaronm70/batMods/blob/master/modelMethods.html>
+    <https://github.com/aaronm70/batMods/blob/master/modelMethods.pdf>
 
   - This is a work in progress as part of a paper on bat virus dynamics,
     as such should not be seen as a final analysis <br>
