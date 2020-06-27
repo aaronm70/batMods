@@ -2,13 +2,8 @@
 title: "Readme"
 author: "Aaron M."
 date: "`r format(Sys.time(), '%d %B, %Y')`"
-output:
-  html_document: default
-  word_document: default
-  pdf_document: default
-header-includes:
-- \usepackage[left]{lineno}
-- \linenumbers
+always_allow_html: true
+output: github_document
 bibliography: /Users/alm204/Documents/Cambridge/models/batMods/batMods/batBib.bib
 ---
 
