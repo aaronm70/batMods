@@ -2,8 +2,12 @@
 
 
 #' model step function - runs model in steps using Odin, returning the model state at a subsequent time point
-#' @param weightInput string of values for model state, time to run model from/to and model parameters
-#' @return model state at next timestep
+#'@param particles number of particles in run
+#'@param mod  redundant - needs removing
+#'@param startTime current time in model
+#'@param endTime time of next datapoint
+#'@param birthtype maternal immunity on off
+#'@return simulated data for time step
 modStepJI <- function(particles,mod,birthType,startTime,endTime) {
   #parse input data
 
@@ -47,6 +51,11 @@ modStepJI <- function(particles,mod,birthType,startTime,endTime) {
 
 
 ##function for running deterministic model
+#'@param params model parameters
+#'@param obsData  observed data
+#'@param assump redundant - needs removing
+#'@param likelihoodFunc likelihood function to use
+#'@param birthtype maternal immunity on off
 detModFunc<-function(params,obsData,assump,likelihoodFunc,birthType){
   currentTime=obsData$NumDays[1]
   nextTime=obsData$NumDays[nrow(obsData)]
@@ -140,6 +149,11 @@ return(ll)
 
 
 ####function for running deterministic model and getting output for LOO and WAIC
+#'@param data_i observed data
+#'@param draws  posterior draws
+#'@param assump redundant - needs removing
+#'@param likelihoodFunc likelihood function to use
+#'@param birthtype maternal immunity on off
 detModFuncLOO<-function(data_i,draws,assump="I",likelihoodFunc,birthType){
 
   llMat<-NULL
@@ -244,7 +258,7 @@ detModFuncLOO<-function(data_i,draws,assump="I",likelihoodFunc,birthType){
 
 
 
-##function for running deterministic model
+##function for running deterministic model in shiny - old and needs updating
 detModFuncShiny<-function(params,times,assump=NULL,likelihoodFunc=NULL){
   currentTime=times[1]
   nextTime=times[2]
@@ -341,129 +355,13 @@ detModFuncShiny<-function(params,times,assump=NULL,likelihoodFunc=NULL){
 
 
 
-
-####function for running deterministic model and getting output for LOO and WAIC
-detModFuncLOO_ind<-function(data_i,draws,assump="I",likelihoodFunc=NULL,birthType){
-
-  currentTime=0
-  nextTime=data_i$NumDays[nrow(data_i)]
-
-  ll=NULL
-
-  for(j in c(1:nrow(draws))){
-
-    params<-draws[j,]
-
-    currentTime=0
-    nextTime=data_i$NumDays
-    initialState<- as.data.frame(iState(prms=params,n=2))[1,]
-    initialState<-as.numeric(initialState)
-    assign("params", params, env = .GlobalEnv)
-
-    params$kappa_Val<-10^params$kappa_Val
-    if(params$gammaVer==0){
-      params$rho_Val<-ifelse(params$rho_Val>-1,10^params$rho_Val,-1)
-      params$epsilon_Val<-ifelse(params$epsilon_Val>-1,10^params$epsilon_Val,-1)
-    }
-    if(params$gammaVer>0){
-      params$gamma_2_Val<-ifelse(params$gamma_2_Val>-1,10^params$gamma_2_Val,-1)
-    }
-
-
-
-    mod <-
-      detSEIR(
-        Sn_ini = initialState[1],
-        Sj_ini = initialState[2],
-        Sf_ini = initialState[3],
-        Sm_ini = initialState[4],
-        Ma_ini = initialState[5],
-        En_ini = initialState[6],
-        Ej_ini = initialState[7],
-        Ef_ini = initialState[8],
-        Em_ini = initialState[9],
-        In_ini = initialState[10],
-        Ij_ini = initialState[11],
-        If_ini = initialState[12],
-        Im_ini = initialState[13],
-        Rn_ini = initialState[14],
-        Rj_ini = initialState[15],
-        Rf_ini = initialState[16],
-        Rm_ini = initialState[17],
-        sigma_2_Val = params$sigma_2_Val,
-        gamma_2_Val = params$gamma_2_Val,
-        zeta_s = params$zeta_s,
-        gamma_1_Val = params$gamma_1_Val,
-        m_Val = params$m_Val,
-        rho_Val = params$rho_Val,
-        R0_Val = params$R0_Val,
-        phi_Val = params$phi_Val,
-        s_Val = params$s_Val,
-        c_Val = params$c_Val,
-        omega_m_Val = params$omega_m_Val,
-        omega_2_Val = params$omega_2_Val,
-        kappa_Val = params$kappa_Val,
-        epsilon_Val = params$epsilon_Val,
-        mj_Val = params$mj_Val,
-        betaVer = params$betaVer,
-        gammaVer = params$gammaVer,
-        sigmaVer = params$sigmaVer,
-        Phi2_val = params$Phi2_val,
-        S2_val  = params$S2_val,
-        c_val2  = params$c_val2,
-        envOscType = params$envOscType,
-        dt=365*4,
-        birthType=birthType,
-        betaFX=params$betaFX,
-        betaFXVal=params$betaFXVal
-
-      )
-
-
-    tx = seq(currentTime, nextTime)
-    simDat <- as.data.frame(mod$run(tx))
-
-      detMod2<-simDat[data_i$NumDays,-1]
-      llx<-likelihoodFunc(
-        S=sum(round(as.vector(detMod2[c(1:4)]))),
-        E=sum(round(as.vector(detMod2[c(6:9)]))),
-        I=sum(round(as.vector(detMod2[c(10:13)]))),
-        R=sum(round(as.vector(detMod2[c(14:17,5)]))),
-        parms = params,
-        N = data_i$positives+ data_i$negatives,
-        k_PpSp = data_i$PpSp,
-        k_PnSp = data_i$PnSp,
-        k_PpSn = data_i$PpSn,
-        k_PnSn = data_i$PnSn,
-        PCR = data_i$pcrPos,
-        urPredDat = tryCatch({data_i$fit}, error =function(ex){NULL}),
-        time = data_i$Date,
-        assump = assump)
-
-      ll=rbind(ll,llx)
-
-
-
-
-
-
-
-  }
-  return(ll)
-
-}
-
-betaMean<-function(currentTime=73816,nextTime=75080,params){
-
-  beta_Val2<-(R0_Val*((params$epsilon_Val+(params$zeta_s+params$sigma_2_Val)+params$m_Val)*((params$gamma_1_Val+params$gamma_2_Val)+params$m_Val+params$rho_Val)
-                      -params$epsilon_Val*params$rho_Val)/(N*params$epsilon_Val+(params$zeta_s+params$sigma_2_Val)+params$m_Val))
-
-}
-
-
-
-
-####function for running deterministic model and getting output for LOO and WAIC
+####function for running pFilt and obtaining pointwise log likelihood values for old runs where this was not explicitly implemented
+#'@param data observed data
+#'@param gg  mcmc results
+#'@param assump redundant - needs removing
+#'@param likelihoodFunc likelihood function to use
+#'@param birthtype maternal immunity on off
+#'@param nDraws if drawing from posterior
 pFiltMat<-function(data,gg,assump="I",likelihoodFunc=NULL,birthType=0,nDraws){
 
   draws<-gg[sample(nrow(gg), nDraws), ]
