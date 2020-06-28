@@ -17,7 +17,7 @@ median(gg$ll)
   birthType<-ifelse(prmFile$birthType[i]=="noImmune",1,0)
 
 
-    looTmp<-calc.loo(data=obsData,gg=gg,assump=prmFile$assump[i],likelihoodFunc = prmLst[[i]]$lFunc,nDraw=1000,birthType = birthType)
+    looTmp<-calc.loo(data=obsData,gg=gg,assump=prmFile$assump[i],likelihoodFunc = prmLst[[i]]$lFunc,nDraws=samples,birthType = birthType)
 
 
   print(looTmp[[1]])

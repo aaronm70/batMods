@@ -1,7 +1,7 @@
 Readme
 ================
 Aaron M.
-27 June, 2020
+28 June, 2020
 
 batMods fits a number of discrete time stochastic models of varying
 structures with and without seasonal forces, to observed bat virus data
@@ -9,7 +9,7 @@ structures with and without seasonal forces, to observed bat virus data
 MCMC based methods. The goal is to identify which dynamical model best
 represents the observed viral samples from wild populations and gain
 further insight into between-host viral dynamics in bats. Model
-comparison is conducted used an approximate leave one out cross
+comparison is conducted using an approximate leave one out cross
 validation algorithm, incorporating Pareto smoothed importance sampling
 (Vehtari et al. 2019). This algorithm uses pointwise likelihood values
 to compute the log pointwise predictive density and its Monte Carlo
@@ -47,7 +47,7 @@ binoial distributions, see suppplementary materials for full details
     whilst the model itself runs in C code, which is implemented via the
     Odin package.
 
-  - The model and fitting methods are described in modelMethods.html
+  - The model and fitting methods are described in modelMethods.pdf
     <https://github.com/aaronm70/batMods/blob/master/modelMethods.pdf>
 
   - This is a work in progress as part of a paper on bat virus dynamics,

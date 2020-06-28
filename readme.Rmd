@@ -14,7 +14,7 @@ library(coda)
 
 
 batMods fits a number of discrete time stochastic models of varying structures with and without seasonal forces, to observed bat virus data (currently from boonah australia [@field2015spatiotemporal]), using particle MCMC based methods. The goal is to identify which dynamical model best represents the observed viral samples from wild populations and gain further insight into between-host viral dynamics in bats. 
-Model comparison is conducted used an approximate leave one out cross validation algorithm, incorporating Pareto smoothed importance sampling [@VehtariLooPackage]. This algorithm uses pointwise likelihood values to compute the log pointwise predictive density and its  Monte Carlo standard error, the effective number of parameters, Pareto k diagnostic values (which can help assess if a model is well specified) and an information criterion "looic" (lower values suggest a better model fit).  [@vehtari2017practical;@vehtari2015pareto;@AkiLoo].
+Model comparison is conducted using an approximate leave one out cross validation algorithm, incorporating Pareto smoothed importance sampling [@VehtariLooPackage]. This algorithm uses pointwise likelihood values to compute the log pointwise predictive density and its  Monte Carlo standard error, the effective number of parameters, Pareto k diagnostic values (which can help assess if a model is well specified) and an information criterion "looic" (lower values suggest a better model fit).  [@vehtari2017practical;@vehtari2015pareto;@AkiLoo].
 
 
 <br>
@@ -31,7 +31,7 @@ knitr::include_graphics("https://github.com/aaronm70/batMods/blob/master/figures
 
  - The metropilis hastings and particle filter algorithms run in R, whilst the model itself runs in C code, which is implemented via the Odin package. 
 
- - The model and fitting methods are described in modelMethods.html 
+ - The model and fitting methods are described in modelMethods.pdf 
 https://github.com/aaronm70/batMods/blob/master/modelMethods.pdf
 
  - This is a work in progress as part of a paper on bat virus dynamics, as such should not be seen as a final analysis 

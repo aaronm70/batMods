@@ -30,7 +30,7 @@ plotAllRt(fileLoc= resultsFile,Rt=T,saveLoc=saveLoc,burn=burn,modNums=modNums,pr
 plotAllRt(fileLoc= resultsFile,Rt=F,saveLoc=saveLoc,burn=burn,modNums=modNums,prmFile=prmFile)
 plotEnvForc(fileLoc= resultsFile,burn=burn,modNums=modNums,saveLoc=saveLoc,prmFile=prmFile)
 #run function to obtain looic vals, R0's, contributing bats etc
-parmVals<-looicFunc(resultsFile=resultsFile,prmFile=prmFile,burn=burn,samples=500,prmLst=prmLst)
+parmVals<-looicFunc(resultsFile=resultsFile,prmFile=prmFile,burn=burn,samples=0,prmLst=prmLst)
 
 looicVal<-parmVals[[1]]
 zetaS<-parmVals[[5]]

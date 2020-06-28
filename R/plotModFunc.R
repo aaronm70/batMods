@@ -525,17 +525,18 @@ calc.dic <- function(gg,prmFil) {
 
 ##calc LOO
 calc.loo <- function(data=obsData,gg=gg,assump=assump,nDraws,likelihoodFunc,birthType) {
-  library(doParallel)
 
   gg1<-gg[gg$chainID==1,]
   gg2<-gg[gg$chainID==2,]
 
-  post<-gg1#[sample(nrow(gg1), nDraws), ]
-  post2<-gg2#[sample(nrow(gg2), nDraws), ]
-
-# llMat<-pFiltMat(data=data,gg=post,assump=assump,likelihoodFunc=likelihoodFuncBoonahStoch,birthType=birthType,nDraws=nDraws)
-# llMat2<-pFiltMat(data=data,gg=post2,assump=assump,likelihoodFunc=likelihoodFuncBoonahStoch,birthType=birthType,nDraws=nDraws)
-#
+  if(nDraws>0){
+  post<-gg1[sample(nrow(gg1), nDraws), ]
+  post2<-gg2[sample(nrow(gg2), nDraws), ]
+  }
+  else {
+    post<-gg1
+    post2<-gg2
+  }
 
   post$mu_Val<-as.numeric(as.character(post$mu_Val))
   post2$mu_Val<-as.numeric(as.character(post2$mu_Val))
