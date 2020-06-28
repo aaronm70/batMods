@@ -82,13 +82,6 @@ Model Evaluation Using Leave-One-Out Cross-Validation and Waic.”
 
 </div>
 
-<div id="ref-AkiLoo">
-
-Vehtari, Aki, Andrew Gelman, and Jonah Gabry. 2017b. “Practical Bayesian Model Evaluation Using Leave-One-Out
-Cross-Validation and Waic.” *Statistics and Computing* 27 (5): 1413–32.
-<https://doi.org/10.1007/s11222-016-9696-4>.
-
-</div>
 
 <div id="ref-vehtari2015pareto">
 
