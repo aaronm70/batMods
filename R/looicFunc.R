@@ -1,4 +1,10 @@
-
+# looic function, fairly messy and needs tidying slightly
+#' @param resultFile location of mcmc results
+#' @param prmFile file for model setups
+#' @param burn any extra chain burning
+#' @param samples if sampling from posterior for pointwise likelihoods
+#' @param prmLst more parameter values
+#' @return looic and associated data for all models
   looicFunc<-function(resultsFile,prmFile,burn,samples,prmLst){
     contBats<-NULL
     r0Val<-NULL
@@ -89,61 +95,3 @@ mcmc_trace(list(as.matrix(ggF1[,1:19]),as.matrix(ggF2[,1:19])))
     return(looData)
   }
 
-
-
-
-
-
-  ##calc LOO
-  calc.loo <- function(data=obsData,gg=gg,assump=assump,nDraws,likelihoodFunc,birthType,threshold) {
-
-    gg1<-gg[gg$chainID==1,]
-    gg2<-gg[gg$chainID==2,]
-
-    if(nDraws>0){
-      post<-gg1[sample(nrow(gg1), nDraws), ]
-      post2<-gg2[sample(nrow(gg2), nDraws), ]
-    }
-    else {
-      post<-gg1
-      post2<-gg2
-    }
-
-    post$mu_Val<-as.numeric(as.character(post$mu_Val))
-    post2$mu_Val<-as.numeric(as.character(post2$mu_Val))
-
-    llMat<-detModFuncLOO(data,post,assump,likelihoodFunc,birthType)
-    llMat2<-detModFuncLOO(data,post2,assump,likelihoodFunc,birthType)
-
-    nlength<-ifelse(nrow(llMat)<nrow(llMat2),nrow(llMat),nrow(llMat2))
-
-
-    llMat10<-rbind(llMat,llMat2)[1:(2*nlength),]
-
-    rel_n_eff <- relative_eff(exp(llMat10),chain_id = c(rep(1,nlength),rep(2,nlength)) )
-
-    #llMat<-detModFuncLOO_ind(data[2,],post,assump,likelihoodFunc)
-    loo_3<-loo(llMat10, r_eff = rel_n_eff, cores = 11, k_threshold = 0.7,save_psis = T)
-    #loo_3 <- loo(detModFuncLOO_ind, data = obsData[-1,], draws = post, r_eff = NA,likelihoodFunc=likelihoodFunc,assump=assump,birthType=birthType,cores=10)
-    #  return(loo(llMat, r_eff = rel_n_eff, cores = 11))
-    return(list(loo_3,llMat,rel_n_eff))
-  }
-
-  ##calc LOO
-  calc.looStoch <- function(data=obsData,gg=gg,assump=assump,nDraws,likelihoodFunc,birthType) {
-
-    gg1<-gg[gg$chainID==1,]
-    gg2<-gg[gg$chainID==2,]
-
-    llMat<-pFiltMat(data=data,gg=gg1,assump=assump,likelihoodFunc=likelihoodFuncBoonahStoch,birthType=birthType,nDraws=nDraws)
-    llMat2<-pFiltMat(data=data,gg=gg2,assump=assump,likelihoodFunc=likelihoodFuncBoonahStoch,birthType=birthType,nDraws=nDraws)
-
-    llMat<-rbind(gg1[,33:48],gg2[,33:48])
-
-
-    rel_n_eff <- relative_eff(exp(llMat),chain_id=c(rep(1,nrow(gg1)),rep(2,nrow(gg2))))
-
-    loo3<- loo(llMat, r_eff = rel_n_eff, cores = 11)
-
-    return(list(loo3,llMat,rel_n_eff))
-  }
