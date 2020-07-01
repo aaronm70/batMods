@@ -5,7 +5,7 @@ library("odin")
 library("lubridate")
 library("readxl")
 library("coda")
-library("mnormt")
+#library("mnormt")
 library("parallel")
 library("R.utils")
 library("tidyr")
@@ -13,7 +13,7 @@ library("batMods")
 library("mgcv")
 library("ggplot2")
 library("rmutil")
-library(mcmcr)
+#install.packages("mcmcr")
 #library("lhs")
 
 
@@ -28,6 +28,7 @@ fileLocUrine="/home/aaron/henrda-underRoostUrine.csv"
 prmFileLoc="/home/aaron/ModelSetups.csv"
 
 }
+set.seed(2)
 
 #read in bat data for boonah
 obsDataBoonah<-boonahDatFunc(ret="obs",species="BFF",fileLoc=fileLoc)
@@ -59,16 +60,14 @@ obsData<-obsDataBoonah
 prmLst<-prmLstFunc(prmFileLoc) #list of model structures and setups with associated starting parameter values
 
 
-set.seed(2)
-
-ff<-mcmcSampler(initParams=prmLst[[4]], #fit to one of the model structures, use mcmapply to fit to multiple at once
+ff2<-mcmcSampler(initParams=prmLst[[4]], #fit to one of the model structures, use mcmapply to fit to multiple at once
              sdProps=NULL,
              maxSddProps=NULL,
-             niter=500,
+             niter=9900,
              particleNum=50,
              proposer = multiv.proposer,
              proposerType = "block",
-             startAdapt = 10000,
+             startAdapt = 1000,
              nburn = 50,
              acceptanceRate = 0.3,
              stoch=F,
@@ -80,5 +79,4 @@ ff<-mcmcSampler(initParams=prmLst[[4]], #fit to one of the model structures, use
              priorFunc=lpriorBoonah,
              switch=20000,
              switchBlock = 50000,
-             lhsSamp=F,
              juvenileInfection=F)

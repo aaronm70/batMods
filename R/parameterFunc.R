@@ -40,17 +40,17 @@ paramsFunc <-
     # immune waning rate
     epsilon_Val =    0 ,
     # incubation/recurrance rate E->I
-    kappa_Val =      rnorm(1,2.8,0.3)  ,
+    kappa_Val =      rnorm(1,mean=3.60206,sd=0.1)  ,
     # carrying capacity
     c_Val = 2.113776  , # p.alecto 0.4? 1.53 for ghana,
     #birth pulse scalar
-    s_Val = rnorm(1,15,3)  , #14.3 for straw col,
+    s_Val = rnorm(1,130,10)  , #14.3 for straw col,
     #birth pulse synchronicity
-    phi_Val = rnorm(1,7.18,1), #7.18 for p.alecto mid october
+    phi_Val = rnorm(1,7.18,0.1), #7.18 for p.alecto mid october
     #birth pulse timing
     rho_Val =  0,
     #latency I->E
-    R0_Val = runif(1,1,15),
+    R0_Val = runif(1,1,25),
 
     Phi2_val= 1,
     #proportion of population sampled
@@ -61,10 +61,10 @@ paramsFunc <-
     sigmaVer=ifelse(zeta_s>0,1,2),
     gammaVer=ifelse(gamma_1_Val>0,1,2),
     betaVer=2,
-    S2_val =runif(1,1,20) ,
-    d_val =   runif(1,1,10),
+    S2_val =runif(1,1,25) ,
+    d_val =   runif(1,1,25),
     oDist1=2,
-    oDist_u=runif(1,1,2),
+    oDist_u=runif(1,0,3),
     c_val2=1,
     envOscType=0,
     betaFX=0,

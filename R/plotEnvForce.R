@@ -24,7 +24,7 @@ plotEnvForc <- function(fileLoc,burn,modNums,saveLoc,prmFile) {
       medVal <- 10 ^ median(gg$epsilon_Val)
       ciValsEp <- 10 ^ HPDinterval(as.mcmc(gg$epsilon_Val),prob=.89)
 
-      sDriveEpOrig <- c * exp(-s * (cos(pi * x - phi)) ^ 2)
+      sDriveEpOrig <- c * exp(-s * (cos(pi * x - 1)) ^ 2)
       sDriveEp <- medVal * sDriveEpOrig
       sDriveEp <- as.data.frame(sDriveEp)
       sDriveEp$date <-
@@ -34,7 +34,7 @@ plotEnvForc <- function(fileLoc,burn,modNums,saveLoc,prmFile) {
         geom_line(colour = "purple", size = 1.5) +
         theme_bw(base_size = 20) +
         scale_x_date(date_breaks = "2 months" , date_labels = "%b") +
-        ylab(expression(epsilon_t ~ (year ^ -1))) +
+        ylab(expression(epsilon[t] ~ (year ^ -1))) +
         geom_ribbon(
           aes(ymin = sDriveEpOrig * ciValsEp[1], ymax = sDriveEpOrig * ciValsEp[2]),
           fill = "purple",
@@ -57,7 +57,7 @@ plotEnvForc <- function(fileLoc,burn,modNums,saveLoc,prmFile) {
         geom_line(colour = "purple", size = 1.5) +
        theme_bw(base_size = 20) +
         scale_x_date(date_breaks = "2 months" , date_labels = "%b") +
-        ylab(expression(epsilon_t ~ (year ^ -1))) +
+        ylab(expression(epsilon[t] ~ (year ^ -1))) +
         geom_ribbon(
           aes(ymin = sDriveEp2Orig * ciValsEp2[1], ymax = sDriveEp2Orig * ciValsEp2[2]),
           fill = "purple",
@@ -80,7 +80,7 @@ plotEnvForc <- function(fileLoc,burn,modNums,saveLoc,prmFile) {
         geom_line(colour = "purple", size = 1.5) +
         theme_bw(base_size = 20) +
         scale_x_date(date_breaks = "2 months" , date_labels = "%b") +
-        ylab(expression(gamma_t ~ (year ^ -1))) +
+        ylab(expression(gamma[t] ~ (year ^ -1))) +
         geom_ribbon(
           aes(
             ymin = sDriveGamOrig * ciValsGam[1],
@@ -108,7 +108,7 @@ plotEnvForc <- function(fileLoc,burn,modNums,saveLoc,prmFile) {
         geom_line(colour = "purple", size = 1.5) +
         theme_bw(base_size = 20) +
         scale_x_date(date_breaks = "2 months" , date_labels = "%b") +
-        ylab(expression(omega_t ~ (year ^ -1))) +
+        ylab(expression(omega[t] ~ (year ^ -1))) +
         geom_ribbon(
           aes(
             ymin = sDriveOmegOrig * ciValsOmeg[1],

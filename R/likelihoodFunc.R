@@ -68,7 +68,7 @@ N_u=46
 X_u<-(urPredDat*N_u)
 
    #betabinomial from rmutil package
-  out<-out + tryCatch({ rmutil::dbetabinom(y=round(X_u),m=Pt,size=round(N_u),s=parms$oDist_u,log=T)}, error =function(ex){-100000})
+  out<-out + tryCatch({ rmutil::dbetabinom(y=round(X_u),m=Pt,size=round(N_u),s=10^parms$oDist_u,log=T)}, error =function(ex){-100000})
 
   out<- tryCatch({ if(N>1e5) out-1e10 else out }, error =function(ex){-1e10})
 
@@ -115,7 +115,7 @@ likelihoodFuncBoonahStoch<-function(parms,N,k_PpSp,k_PnSp,k_PpSn,k_PnSn,S,I,Ia,E
   X_u<-(urPredDat*N_u)
 
   #betabinomial from rmutil package
-  out<-out + tryCatch({ rmutil::dbetabinom(y=round(X_u),m=Pt,size=round(N_u),s=parms$oDist_u,log=T)}, error =function(ex){-100000})
+  out<-out + tryCatch({ rmutil::dbetabinom(y=round(X_u),m=Pt,size=round(N_u),s=10^parms$oDist_u,log=T)}, error =function(ex){-100000})
 
   out<- tryCatch({ if(N>1e5) out-1e10 else out }, error =function(ex){-1e10})
 

@@ -93,46 +93,43 @@ boonahDatFunc<-function(ret="all",species="BFF",cutoff=1636,fileLoc){
 sdFunc<-function(prms,max=F){
   if(max==F) {
     sdProps = 3*unlist(prms)
-    sdProps[2]<-0.1
+    sdProps["omega_2_Val"]<-0.5
+    sdProps["gamma_2_Val"]<-0.5
+    sdProps[c("epsilon_Val", "rho_Val" )]<-0.5
+    sdProps[c( "mu_Val" , "c_Val","sigmaVer" ,"gammaVer", "betaVer" )]<-0
+    sdProps[c("R0_Val","d_val"   )]<-2
+    sdProps["R0_Val"]<-4
+    sdProps["kappa_Val"]<-0.2
+    sdProps["Phi2_val"]<-0.2
+    sdProps["S2_val"]<-50
+    sdProps["s_Val"]<-5
+    sdProps["c_val2"]<-0
+    sdProps["envOscType"]<-0
+    sdProps[c("betaFX", "betaFXVal")]<-0
+    sdProps[c("mj_Val", "m_Val","omega_m_Val","phi_Val","zeta_p","zeta_s","pcrProb2"  )]<-0.05
+    sdProps["oDist_u"]<-1
+    sdProps[c("oDist1","oDist_s")]<-0
     sdProps[which(prms==0)]<-0
-    sdProps[c(10,15)]<-0.1
-    sdProps[c(5,12,20,21,22)]<-0
-    sdProps[c(19,25)]<-ifelse(prms$zeta_p!=0, 0.1,0)#pcr probs
-    sdProps[c(11,16,24)]<-0.5
-    sdProps[16]<-4
-    sdProps[11]<-0.5
-    sdProps[17]<-0.1
-    sdProps[23]<-5
-    sdProps[28]<-0
-    sdProps[29]<-0
-    sdProps[c(30,31)]<-0
-    sdProps[c(6,7,8,14,19,25)]<-0.05
-    sdProps[c(27)]<-0.5
-    sdProps[c(26,18)]<-0
 
   }
   else {
     sdProps = 100*unlist(prms)
-    sdProps[c(10,15)]<-1
-    sdProps[2]<-1
-    sdProps[3]<-0.3
-
+    sdProps["omega_2_Val"]<-1
+    sdProps["gamma_2_Val"]<-1
+   sdProps[c("epsilon_Val", "rho_Val" )]<-1
+    sdProps[c( "mu_Val" , "c_Val","sigmaVer" ,"gammaVer", "betaVer" )]<-0
+    sdProps[c("R0_Val","d_val"   )]<-5
+    sdProps["kappa_Val"]<-1
+    sdProps["Phi2_val"]<-0.3
+    sdProps["S2_val"]<-25
+    sdProps["s_Val"]<-10
+    sdProps["c_val2"]<-0
+    sdProps["envOscType"]<-0
+    sdProps[c("betaFX", "betaFXVal")]<-0
+    sdProps[c("mj_Val", "m_Val","omega_m_Val","phi_Val","zeta_p","zeta_s","pcrProb2"  )]<-0.3
+    sdProps["oDist_u"]<-3
+    sdProps[c("oDist1","oDist_s")]<-0
     sdProps[which(prms==0)]<-0
-    sdProps[c(5,12,20,21,22)]<-0
-    sdProps[16]<-15
-    sdProps[11]<-1
-    sdProps[17]<-0.5
-    sdProps[13]<-25
-    sdProps[19]<-0.5
-    sdProps[25]<-0.5
-    sdProps[23]<-30
-    sdProps[28]<-0
-    sdProps[29]<-0
-    sdProps[24]<-4
-    sdProps[c(6,7,8,14)]<-0.1
-    sdProps[c(27)]<-2
-    sdProps[c(30,31)]<-0
-    sdProps[c(26,18)]<-0
 
   }
   return(sdProps)

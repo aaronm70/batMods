@@ -1,9 +1,10 @@
 ---
-title: "Readme"
-author: "Aaron M."
+title: "batMods"
+author: "AM"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
-always_allow_html: true
-output: github_document
+output:
+  word_document: default
+  html_document: default
 bibliography: /Users/alm204/Documents/Cambridge/models/batMods/batMods/batBib.bib
 ---
 
@@ -11,7 +12,11 @@ bibliography: /Users/alm204/Documents/Cambridge/models/batMods/batMods/batBib.bi
 library(kableExtra)
 library(coda)
 ```
+This is an overview of an R package I am currently developing as part of a research paper looking into virus dynamics in bat populations of Australia. 
 
+The link to the github repo is: https://github.com/aaronm70/batMods, which contains all code and associated data.
+
+# Overview 
 
 batMods fits a number of discrete time stochastic models of varying structures with and without seasonal forces, to observed bat virus data (currently from boonah australia [@field2015spatiotemporal]), using particle MCMC based methods. The goal is to identify which dynamical model best represents the observed viral samples from wild populations and gain further insight into between-host viral dynamics in bats. 
 Model comparison is conducted using an approximate leave one out cross validation algorithm, incorporating Pareto smoothed importance sampling [@VehtariLooPackage]. This algorithm uses pointwise likelihood values to compute the log pointwise predictive density and its  Monte Carlo standard error, the effective number of parameters, Pareto k diagnostic values (which can help assess if a model is well specified) and an information criterion "looic" (lower values suggest a better model fit).  [@vehtari2017practical;@vehtari2015pareto;@AkiLoo].
@@ -19,8 +24,8 @@ Model comparison is conducted using an approximate leave one out cross validatio
 
 <br>
 
-```{r, echo=FALSE, fig.cap="Figure 1: Model structures for SILI, SIR and SIRS type models, each model is built on top of an age structured bat population model and transitions occur between variable states as probablistic draws from binoial distributions, see suppplementary materials for full details", out.width = '100%',out.height='75%'}
-knitr::include_graphics("https://github.com/aaronm70/batMods/blob/master/figures/adultMod-Paper.png?raw=true")
+```{r, echo=FALSE, fig.cap="Figure 1: Model structures for SILI, SIR and SIRS type models, each model is built on top of an age structured bat population model with stochastic transitions between empirical states, see model methods (https://github.com/aaronm70/batMods/blob/master/modelMethods.pdf) for full details", out.width = '100%',out.height='75%'}
+knitr::include_graphics("/Users/alm204/OneDrive/Cambridge/Projects/model_comparisons/figures/adultMod-Paper.png")
 ```
 
 <br>
@@ -37,5 +42,5 @@ https://github.com/aaronm70/batMods/blob/master/modelMethods.pdf
  - This is a work in progress as part of a paper on bat virus dynamics, as such should not be seen as a final analysis 
 <br>
 
-## References
+# References
 

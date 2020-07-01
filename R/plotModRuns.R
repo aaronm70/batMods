@@ -1,4 +1,15 @@
 
+betaShapeFinder<-function(size,m,s){
+  x<-rmutil::rbetabinom(n=10000,size=size,m=m,s=s)
+  x = (x-min(x))/(max(x)-min(x))
+  mu<-mean(x)
+  vari<-var(x)
+  alpha <- ((1 - mu) / vari - 1 / mu) * mu ^ 2
+  beta <- alpha * (1 / mu - 1)
+  return(params = list(alpha = alpha, beta = beta))
+}
+
+
 #' plot model from mcmc results
 #' @param mcmc mcmc results
 #' @return figures

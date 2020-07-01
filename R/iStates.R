@@ -4,7 +4,7 @@
 
 iState<-function(n,prms){
   b <- (prms$omega_m_Val+prms$mj_Val)*((prms$mj_Val+prms$mu_Val)/prms$omega_m_Val)*prms$m_Val/prms$mu_Val
-  N<-10^prms$kappa_Val
+  N<-prms$kappa_Val
   Na=(round(N/(1+prms$m_Val/prms$mu_Val+b/(prms$omega_m_Val+prms$mj_Val))))
   Nj <- round(Na*prms$m_Val/prms$mu_Val)
   Nn <- N - Na - Nj
@@ -52,7 +52,6 @@ jspan=1.3
 
   #caclulate initial value of birth rate constant (to optimize)
   c0 <- m/bessI(s/2)*exp(s/2)*sqrt(s/pi)
-
   #optimize birth rate constant to minimize adult population growth
   grow <- function(k){
     inner <- function(t){

@@ -13,7 +13,6 @@ Imports:
     lubridate,
     readxl,
     coda,
-    mnormt,
     parallel,
     R.utils,
     tidyr,

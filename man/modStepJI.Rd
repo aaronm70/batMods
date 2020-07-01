@@ -7,10 +7,18 @@
 modStepJI(particles, mod, birthType, startTime, endTime)
 }
 \arguments{
-\item{weightInput}{string of values for model state, time to run model from/to and model parameters}
+\item{particles}{number of particles in run}
+
+\item{mod}{redundant - needs removing}
+
+\item{startTime}{current time in model}
+
+\item{endTime}{time of next datapoint}
+
+\item{birthtype}{maternal immunity on off}
 }
 \value{
-model state at next timestep
+simulated data for time step
 }
 \description{
 model step function - runs model in steps using Odin, returning the model state at a subsequent time point

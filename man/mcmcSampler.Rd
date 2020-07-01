@@ -26,12 +26,13 @@ mcmcSampler(
   priorFunc = NA,
   switch = 2500,
   switchBlock = 2500,
-  lhsSamp = F,
   likelihoodFunc = likelihoodFunc1,
   juvenileInfection = F
 )
 }
 \arguments{
+\item{randInit}{T then randomly sample initial parameters instead of initParams value}
+
 \item{proposer}{proposal function, multivariate block (adaptiveMCMC must = T) or sequential can have adaptive or not adaptive tuning}
 
 \item{sdProps}{standard deviation for proposal distributions - in adaptive this is the starting sd}
@@ -57,10 +58,6 @@ mcmcSampler(
 \item{cluster}{T/F if true, using dide cluster, if false running locally}
 
 \item{initial}{parameter guess}
-
-\item{if}{T then randomly sample initial parameters instead of initParams value}
-
-\item{fixedParam}{specific fixed parameters in model, currently just n - needs updating to include more than one value for future flexibility}
 
 \item{particles}{number of particles for particle filter}
 

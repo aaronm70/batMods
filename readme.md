@@ -3,6 +3,15 @@ Readme
 Aaron M.
 28 June, 2020
 
+This is an overview of an R package I am currently developing as part of
+a research paper looking into virus dynamics in bat populations of
+Australia.
+
+The link to the github repo is: <https://github.com/aaronm70/batMods>,
+which contains all code and associated data.
+
+# Overview
+
 batMods fits a number of discrete time stochastic models of varying
 structures with and without seasonal forces, to observed bat virus data
 (currently from boonah australia (Field et al. 2015)), using particle
@@ -22,14 +31,15 @@ information criterion “looic” (lower values suggest a better model fit).
 
 <div class="figure">
 
-<img src="https://github.com/aaronm70/batMods/blob/master/figures/adultMod-Paper.png?raw=true" alt="Figure 1: Model structures for SILI, SIR and SIRS type models, each model is built on top of an age structured bat population model and transitions occur between variable states as probablistic draws from binoial distributions, see suppplementary materials for full details" width="100%" height="75%" />
+<img src="https://github.com/aaronm70/batMods/blob/master/figures/adultMod-Paper.png?raw=T.png" alt="Figure 1: Model structures for SILI, SIR and SIRS type models, each model is built on top of an age structured bat population model with stochastic transitions between empirical states, see model methods (https://github.com/aaronm70/batMods/blob/master/modelMethods.pdf) for full details" width="100%" height="75%" />
 
 <p class="caption">
 
 Figure 1: Model structures for SILI, SIR and SIRS type models, each
-model is built on top of an age structured bat population model and
-transitions occur between variable states as probablistic draws from
-binoial distributions, see suppplementary materials for full details
+model is built on top of an age structured bat population model with
+stochastic transitions between empirical states, see model methods
+(<https://github.com/aaronm70/batMods/blob/master/modelMethods.pdf>) for
+full details
 
 </p>
 
@@ -53,7 +63,7 @@ binoial distributions, see suppplementary materials for full details
   - This is a work in progress as part of a paper on bat virus dynamics,
     as such should not be seen as a final analysis <br>
 
-## References
+# References
 
 <div id="refs" class="references hanging-indent">
 

@@ -19,7 +19,7 @@ if(Sys.info()['sysname']=="Darwin"){
 prmLst<-prmLstFunc(prmFileLoc)
 
 
-resultsFile<-"/Users/alm204/Documents/Cambridge/results/jun22/res_"
+resultsFile<-"/Users/alm204/Documents/Cambridge/results/jul1/res_"
 prmFile<-read.csv("/Users/alm204/Documents/ModelSetups.csv")#read in model setups
 saveLoc<-"/Users/alm204/OneDrive/Cambridge/Projects/model_comparisons/figures/"
 burn<-110000

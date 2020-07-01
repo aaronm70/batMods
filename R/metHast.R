@@ -127,20 +127,20 @@ betaMean<-function(params){
   gamma_2_Val<-params$gamma_2_Val
 
   if(params$gammaVer==0){
-    epsilon_Val<-10^params$epsilon_Val*sDrive
-    rho_Val<-10^params$rho_Val
+    epsilon_Val<-params$epsilon_Val*sDrive
+    rho_Val<-params$rho_Val
   }
   if(params$gammaVer>0){
-    gamma_2_Val<-10^params$gamma_2_Val*sDrive
+    gamma_2_Val<-params$gamma_2_Val*sDrive
   }
 
  #
- # r0<-((beta*10^params$kappa_Val)*(epsilon_Val+params$m_Val))/
+ # r0<-((beta*params$kappa_Val)*(epsilon_Val+params$m_Val))/
  #   ((epsilon_Val+params$m_Val)*(gamma_2_Val+params$m_Val+rho_Val)-epsilon_Val*rho_Val)
  #
   return(mean(params$R0_Val*((epsilon_Val+params$sigma_2_Val+params$m_Val)*
                                        (params$gamma_2_Val+params$m_Val+rho_Val)
-                                     -epsilon_Val*rho_Val)/(10^params$kappa_Val*(epsilon_Val+params$sigma_2_Val+params$m_Val))))
+                                     -epsilon_Val*rho_Val)/(params$kappa_Val*(epsilon_Val+params$sigma_2_Val+params$m_Val))))
 }
 
 
