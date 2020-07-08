@@ -28,9 +28,11 @@ modNums<-c(1:8)#model numbers to plot (see model setups table, prmFile)
 plotAllRt(fileLoc= resultsFile,Rt=T,saveLoc=saveLoc,burn=burn,modNums=modNums,prmFile=prmFile)
 #Plot fitted simulat
 plotAllRt(fileLoc= resultsFile,Rt=F,saveLoc=saveLoc,burn=burn,modNums=modNums,prmFile=prmFile)
-plotEnvForc(fileLoc= resultsFile,burn=burn,modNums=modNums,saveLoc=saveLoc,prmFile=prmFile)
+plotEnvForc(resultsFile= resultsFile,burn=burn,modNums=modNums,saveLoc=saveLoc,prmFile=prmFile)
 #run function to obtain looic vals, R0's, contributing bats etc
 parmVals<-looicFunc(resultsFile=resultsFile,prmFile=prmFile,burn=burn,samples=0,prmLst=prmLst)
+
+#parmVals<-readRDS("/Users/alm204/Documents/looDat.rds")
 
 looicVal<-parmVals[[1]]
 zetaS<-parmVals[[5]]

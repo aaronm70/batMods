@@ -3,11 +3,11 @@
 
 
 ##plot environmental force
-plotEnvForc <- function(fileLoc,burn,modNums,saveLoc,prmFile) {
+plotEnvForc <- function(resultsFile,burn,modNums,saveLoc,prmFile) {
   for (i in modNums) {
     prmFile <- read.csv("/Users/alm204/Documents/ModelSetups.csv")
 
-    gg<-readResFunc(fileLoc=fileLoc,i=i,burn=burn,prmFile=prmFile,thin=10)
+    gg<-readResFunc(fileLoc=resultsFile,i=i,burn=burn,prmFile=prmFile,thin=10)
    params<- colMedians(gg)
     params<-as.data.frame(matrix(params,ncol =length(params),byrow = T))
     names(params)<-names(gg)
