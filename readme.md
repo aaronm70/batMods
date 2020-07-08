@@ -3,13 +3,6 @@ Readme
 Aaron M.
 28 June, 2020
 
-This is an overview of an R package I am currently developing as part of
-a research paper looking into virus dynamics in bat populations of
-Australia.
-
-The link to the github repo is: <https://github.com/aaronm70/batMods>,
-which contains all code and associated data.
-
 # Overview
 
 batMods fits a number of discrete time stochastic models of varying
