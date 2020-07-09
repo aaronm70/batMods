@@ -8,19 +8,6 @@
 ##################################################################################################################################################
 
 
-#add pcr data
-#check serology cutoff
-#stratify by species
-#add seasonality to carrying capacity
-#spatial temporal aspects of hendra virus hume field et al. - shows above roost and underroost
-#population meta data in the paper
-#population = 25,000?
-#check birth pulse timing
-#little reds different birth pulse timings
-#blacks and greys similar but different shedding
-#THINK CAREFULLY ABOUT LIKELIHOOD EG dbinom(50, prob=point.prev, size=100,log=T) POINT.PREV=SIMULATED PREVELANCE
-
-
 
 
 #' Sequential proposal function
@@ -34,12 +21,10 @@ sequential.proposer <- function(current, prmNum, sdProps) {
   proposal <- current
   propVal <-
     proposal[prmNum] + (rnorm(1, mean = 0, sd = sdProps[prmNum]))
-  propVal<-if(propVal<=-0.69897 && prmNum==10) -0.69897 else propVal
-  propVal<-if(propVal<=-0.69897 && prmNum==15) -0.69897 else propVal
-  propVal<-if(propVal<=-0.69897 && prmNum==2) -0.69897 else propVal
 
   proposal[prmNum] <- propVal
-  proposal[proposal<=-0.69897]<--0.69897
+  #some paramns proposed on log10 scale so can go below 0
+  proposal[proposal<=-1]<--1
   return(proposal)
 }
 
