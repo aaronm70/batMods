@@ -38,9 +38,9 @@ median(gg$ll)
   zetaU<-as.data.frame(rbind(zetaU,cbind(median(gg$pcrProb2),HPDinterval(as.mcmc(gg$pcrProb2),prob=0.89),prmFile$ModelType[i],prmFile$lFunc[i])))
   r0Val<-as.data.frame(rbind(r0Val,cbind(median(gg$R0_Val),HPDinterval(as.mcmc(gg$R0_Val),prob=0.89),prmFile$ModelType[i],prmFile$lFunc[i])))
 
-  gg$epsilon_Val<-gg$epsilon_Val
-  gg$rho_Val<-gg$rho_Val
-  gg$gamma_2_Val<-gg$gamma_2_Val
+  gg$epsilon_Val<-10^gg$epsilon_Val
+  gg$rho_Val<-10^gg$rho_Val
+  gg$gamma_2_Val<-10^gg$gamma_2_Val
   gg1<-subset(gg,chainID==1)
   gg2<-subset(gg,chainID==2)
   gg2<-gg2[1:nrow(gg1),]

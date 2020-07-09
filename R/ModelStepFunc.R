@@ -59,16 +59,17 @@ modStepJI <- function(particles,mod,birthType,startTime,endTime) {
 detModFunc<-function(params,obsData,assump,likelihoodFunc,birthType){
   currentTime=obsData$NumDays[1]
   nextTime=obsData$NumDays[nrow(obsData)]
+  params$kappa_Val<-10^params$kappa_Val
+
   initialState<- as.data.frame(iState(prms=params,n=2))[1,]
   initialState<-as.numeric(initialState)
 
-  params$kappa_Val<-params$kappa_Val
   if(params$gammaVer==0){
-    params$rho_Val<-ifelse(params$rho_Val>-1,params$rho_Val,-1)
-    params$epsilon_Val<-ifelse(params$epsilon_Val>-1,params$epsilon_Val,-1)
+    params$rho_Val<-ifelse(params$rho_Val>-1,10^params$rho_Val,-1)
+    params$epsilon_Val<-ifelse(params$epsilon_Val>-1,10^params$epsilon_Val,-1)
   }
   if(params$gammaVer>0){
-    params$gamma_2_Val<-ifelse(params$gamma_2_Val>-1,params$gamma_2_Val,-1)
+    params$gamma_2_Val<-ifelse(params$gamma_2_Val>-1,10^params$gamma_2_Val,-1)
   }
 
   mod <-

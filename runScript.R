@@ -77,6 +77,6 @@ ff2<-mcmcSampler(initParams=prmLst[[4]], #fit to one of the model structures, us
              oDat=obsData,
              likelihoodFunc = likelihoodFuncBoonahStoch,
              priorFunc=lpriorBoonah,
-             switch=20000,
+             switch=500,
              switchBlock = 50000,
              juvenileInfection=F)

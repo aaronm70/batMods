@@ -40,25 +40,22 @@ pFilt <-
   {
     times = obsData$NumDays
     dayObs = obsData$Date
+    prms$kappa_Val <- 10 ^ prms$kappa_Val
+
     particles = round(as.data.frame(iState(prms = prms, n = n))) #initial state
 
     ll = 0# only need start value if fitting initial conditions?
     llMat <- NULL
     rMeans <- NULL
     particlesFull <- NULL
-    prms$kappa_Val <- 10 ^ prms$kappa_Val
 
-    if (prms$gammaVer == 0) {
-      prms$epsilon_Val <- ifelse(prms$epsilon_Val > -1, 10 ^ prms$epsilon_Val, -1)
-      prms$rho_Val <- ifelse(prms$rho_Val > -1, 10 ^ prms$rho_Val, -1)
+    if(prms$gammaVer==0){
+      prms$rho_Val<-ifelse(prms$rho_Val>-1,10^prms$rho_Val,-1)
+      prms$epsilon_Val<-ifelse(prms$epsilon_Val>-1,10^prms$epsilon_Val,-1)
     }
-    if (prms$gammaVer > 0) {
-      prms$gamma_2_Val <- ifelse(prms$gamma_2_Val > -1, 10 ^ prms$gamma_2_Val, -1)
+    if(prms$gammaVer>0){
+      prms$gamma_2_Val<-ifelse(prms$gamma_2_Val>-1,10^prms$gamma_2_Val,-1)
     }
-
-
-
-
 
     mod <-
       stochSEIR(
