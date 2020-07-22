@@ -57,6 +57,10 @@ pFilt <-
       prms$gamma_2_Val<-ifelse(prms$gamma_2_Val>-1,10^prms$gamma_2_Val,-1)
     }
 
+    #calculate mu from juvenile lifespan and mat immune waning
+    params$mu_Val<- 1/((15.55/12) - (1/params$omega_m_Val))
+
+
     mod <-
       stochSEIR(
         sigma_2_Val = prms$sigma_2_Val,

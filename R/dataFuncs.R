@@ -25,18 +25,21 @@ boonahDatFunc<-function(ret="all",species="BFF",cutoff=1636,fileLoc){
   batsBoonah$pos <- batsBoonah$HeV.Serology >= cutoff
   batsBoonah$neg <- batsBoonah$HeV.Serology < cutoff
   #convert urine and urogential values to binomials
+
+  ##remove bats which are missing either pcr for urine or urogential
+  batsBoonah<-batsBoonah[!is.na(batsBoonah$Urine.PCR) | !is.na(batsBoonah$Urogential.PCR),]
+
+  #convert to binary pos/neg
   batsBoonah$Urine.PCR<-as.character(batsBoonah$Urine.PCR)
   batsBoonah$Urine.PCR[batsBoonah$Urine.PCR==">40"]<-"0"
-  batsBoonah$Urine.PCR[is.na(batsBoonah$Urine.PCR)]<-"0"
-  batsBoonah$Urine.PCR[batsBoonah$Urine.PCR!="0"]<-"1"
+  batsBoonah$Urine.PCR[batsBoonah$Urine.PCR>"0"]<-"1"
   batsBoonah$Urogential.PCR<-as.character(batsBoonah$Urogential.PCR)
   batsBoonah$Urogential.PCR[batsBoonah$Urogential.PCR==">40"]<-"0"
-  batsBoonah$Urogential.PCR[is.na(batsBoonah$Urogential.PCR)]<-"0"
-  batsBoonah$Urogential.PCR[batsBoonah$Urogential.PCR!="0"]<-"1"
+  batsBoonah$Urogential.PCR[batsBoonah$Urogential.PCR>"0"]<-"1"
   batsBoonah %<>% mutate_if(is.character,as.numeric)
 
-  #Sum PCR values to get pcr positives but convert to binomila, positive yes/no
-  batsBoonah$pcrPos<-rowSums(batsBoonah[,c(19:20)])
+  #Sum PCR values to get pcr positives but convert to binom, positive yes/no
+  batsBoonah$pcrPos<-rowSums(batsBoonah[,c("Urine.PCR", "Urogential.PCR")],na.rm = T)
   batsBoonah$pcrPos[batsBoonah$pcrPos>0]<-1 #in case bat is positive in both urine and urogential
   #Empirical states PCR and Sero
   batsBoonah$PpSp<-0
@@ -44,15 +47,19 @@ boonahDatFunc<-function(ret="all",species="BFF",cutoff=1636,fileLoc){
   batsBoonah$PnSp<-0
   batsBoonah$PnSn<-0
 
+ #remove bats with no individual serological data
+  batsBoonah<-batsBoonah[is.na(batsBoonah$HeV.Serology)==F,]
+
+
   batsBoonah$PpSp<-ifelse(batsBoonah$pos==T&batsBoonah$pcrPos==1,1,0)
   batsBoonah$PpSn<-ifelse(batsBoonah$pos==F&batsBoonah$pcrPos==1,1,0)
   batsBoonah$PnSp<-ifelse(batsBoonah$pos==T&batsBoonah$pcrPos==0,1,0)
   batsBoonah$PnSn<-ifelse(batsBoonah$pos==F&batsBoonah$pcrPos==0,1,0)
 
-  obsDataPpSp<-aggregate(batsBoonah$PpSp~batsBoonah$Date,FUN=sum)
-  obsDataPpSn<-aggregate(batsBoonah$PpSn~batsBoonah$Date,FUN=sum)
-  obsDataPnSp<-aggregate(batsBoonah$PnSp~batsBoonah$Date,FUN=sum)
-  obsDataPnSn<-aggregate(batsBoonah$PnSn~batsBoonah$Date,FUN=sum)
+  obsDataPpSp<-aggregate(batsBoonah$PpSp~batsBoonah$Date,FUN=sum,na.rm=T)
+  obsDataPpSn<-aggregate(batsBoonah$PpSn~batsBoonah$Date,FUN=sum,na.rm=T)
+  obsDataPnSp<-aggregate(batsBoonah$PnSp~batsBoonah$Date,FUN=sum,na.rm=T)
+  obsDataPnSn<-aggregate(batsBoonah$PnSn~batsBoonah$Date,FUN=sum,na.rm=T)
 
 
   ####
@@ -61,16 +68,15 @@ boonahDatFunc<-function(ret="all",species="BFF",cutoff=1636,fileLoc){
   obsDataNeg<-aggregate(batsBoonah$neg~batsBoonah$Date,FUN=sum)
   obsDataPCR<-aggregate(batsBoonah$pcrPos~batsBoonah$Date,FUN=sum)
   obsDataSer<-aggregate(batsBoonah$HeV.Serology~batsBoonah$Date,FUN=mean)
-  obsDataPCR<-obsDataPCR[-44,]#No serology values for this date (2014-04-29), all NA's missing data? so removed from analysis, otherwise gives unlikely 0 prevalence on this date...
 
   #start constructing data frame
   obsDataBoonah$neg<-obsDataNeg$`batsBoonah$neg`
   obsDataBoonah$pcrPos<-obsDataPCR$`batsBoonah$pcrPos`
   obsDataBoonah$meanSer<-obsDataSer$`batsBoonah$HeV.Serology`
-  obsDataBoonah$PpSp<-obsDataPpSp$`batsBoonah$PpSp`[-44]
-  obsDataBoonah$PpSn<-obsDataPpSn$`batsBoonah$PpSn`[-44]
-  obsDataBoonah$PnSp<-obsDataPnSp$`batsBoonah$PnSp`[-44]
-  obsDataBoonah$PnSn<-obsDataPnSn$`batsBoonah$PnSn`[-44]
+  obsDataBoonah$PpSp<-obsDataPpSp$`batsBoonah$PpSp`
+  obsDataBoonah$PpSn<-obsDataPpSn$`batsBoonah$PpSn`
+  obsDataBoonah$PnSp<-obsDataPnSp$`batsBoonah$PnSp`
+  obsDataBoonah$PnSn<-obsDataPnSn$`batsBoonah$PnSn`
 
   names(obsDataBoonah)<-c("Date","positives","negatives","pcrPos","meanSer","PpSp","PpSn","PnSp","PnSn")
   startdate <- as.Date(obsDataBoonah$Date[1],"%d/%m/%Y")
@@ -93,15 +99,16 @@ boonahDatFunc<-function(ret="all",species="BFF",cutoff=1636,fileLoc){
 sdFunc<-function(prms,max=F){
   if(max==F) {
     sdProps = 3*unlist(prms)
-    sdProps["omega_2_Val"]<-0.5
+
+    sdProps["omega_2_Val"]<-5
     sdProps["gamma_2_Val"]<-0.5
     sdProps[c("epsilon_Val", "rho_Val" )]<-0.5
     sdProps[c( "mu_Val" , "c_Val","sigmaVer" ,"gammaVer", "betaVer" )]<-0
     sdProps[c("R0_Val","d_val"   )]<-2
     sdProps["R0_Val"]<-4
     sdProps["kappa_Val"]<-0.2
-    sdProps["Phi2_val"]<-0.2
-    sdProps["S2_val"]<-50
+    sdProps["Phi2_val"]<-0.1
+    sdProps["S2_val"]<-25
     sdProps["s_Val"]<-5
     sdProps["c_val2"]<-0
     sdProps["envOscType"]<-0
@@ -109,19 +116,22 @@ sdFunc<-function(prms,max=F){
     sdProps[c("mj_Val", "m_Val","omega_m_Val","phi_Val","zeta_p","zeta_s","pcrProb2"  )]<-0.05
     sdProps["oDist_u"]<-1
     sdProps[c("oDist1","oDist_s")]<-0
+   # sdProps["mu_Val"]<-0.05
+
     sdProps[which(prms==0)]<-0
 
   }
   else {
     sdProps = 100*unlist(prms)
-    sdProps["omega_2_Val"]<-1
-    sdProps["gamma_2_Val"]<-1
-   sdProps[c("epsilon_Val", "rho_Val" )]<-1
+
+    sdProps["omega_2_Val"]<-10
+    sdProps["gamma_2_Val"]<-0.5
+   sdProps[c("epsilon_Val", "rho_Val" )]<-0.5
     sdProps[c( "mu_Val" , "c_Val","sigmaVer" ,"gammaVer", "betaVer" )]<-0
-    sdProps[c("R0_Val","d_val"   )]<-5
+    sdProps[c("R0_Val","d_val"   )]<-35
     sdProps["kappa_Val"]<-1
-    sdProps["Phi2_val"]<-0.3
-    sdProps["S2_val"]<-25
+    sdProps["Phi2_val"]<-0.2
+    sdProps["S2_val"]<-20
     sdProps["s_Val"]<-10
     sdProps["c_val2"]<-0
     sdProps["envOscType"]<-0
@@ -129,6 +139,8 @@ sdFunc<-function(prms,max=F){
     sdProps[c("mj_Val", "m_Val","omega_m_Val","phi_Val","zeta_p","zeta_s","pcrProb2"  )]<-0.3
     sdProps["oDist_u"]<-3
     sdProps[c("oDist1","oDist_s")]<-0
+  #  sdProps["mu_Val"]<-0.05
+
     sdProps[which(prms==0)]<-0
 
   }

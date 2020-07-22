@@ -22,6 +22,10 @@ for(i in c(1:8)){
 median(gg$ll)
   birthType<-ifelse(prmFile$birthType[i]=="noImmune",1,0)
 
+  #SIRS: Immune waning at the height of rainy season when food is abundant is unlikely
+  #also SIRS the later the seasonal force wanes immunity, the faster infection needs to occur (i.e. really high R0), less problem with SILI as straight back to infectious and not susceptible
+  #SIR: Increased recovery rate during the winter season to reduce infectious numbers during the summer...but this would unlikely, recovery drops during summer and susceptibles occur as maternal immunity wanes
+  #switch from latent to infectious at height of winter season most probable
 
     looTmp<-calc.loo(data=obsData,gg=gg,assump=prmFile$assump[i],likelihoodFunc = prmLst[[i]]$lFunc,nDraws=samples,birthType = birthType,threshold=NULL)
 
@@ -43,7 +47,7 @@ median(gg$ll)
   gg$gamma_2_Val<-10^gg$gamma_2_Val
   gg1<-subset(gg,chainID==1)
   gg2<-subset(gg,chainID==2)
-  gg2<-gg2[1:nrow(gg1),]
+  gg1<-gg1[1:nrow(gg2),]
 
   ggF1<-Filter(var, gg1)
   ggF2<-Filter(var, gg2)
@@ -55,7 +59,9 @@ median(gg$ll)
  # ggF2<- ggF2[seq(1, nrow(ggF2), by=10), ]
 
 color_scheme_set("viridisC")
-mcmc_trace(list(as.matrix(ggF1[,1:19]),as.matrix(ggF2[,1:19])))
+st=1
+sf=nrow(ggF1)
+mcmc_trace(list(as.matrix(ggF1[st:sf,1:20]),as.matrix(ggF2[st:sf,1:20])))
 
 }
 
@@ -94,4 +100,44 @@ mcmc_trace(list(as.matrix(ggF1[,1:19]),as.matrix(ggF2[,1:19])))
 
     return(looData)
   }
+
+
+
+
+  ##calc LOO
+  calc.loo <- function(data=obsData,gg=gg,assump=assump,nDraws,likelihoodFunc,birthType) {
+    library(doParallel)
+
+    gg1<-gg[gg$chainID==1,]
+    gg2<-gg[gg$chainID==2,]
+
+    post<-gg1#[sample(nrow(gg1), nDraws), ]
+    post2<-gg2#[sample(nrow(gg2), nDraws), ]
+
+    # llMat<-pFiltMat(data=data,gg=post,assump=assump,likelihoodFunc=likelihoodFuncBoonahStoch,birthType=birthType,nDraws=nDraws)
+    # llMat2<-pFiltMat(data=data,gg=post2,assump=assump,likelihoodFunc=likelihoodFuncBoonahStoch,birthType=birthType,nDraws=nDraws)
+    #
+
+    post$mu_Val<-as.numeric(as.character(post$mu_Val))
+    post2$mu_Val<-as.numeric(as.character(post2$mu_Val))
+
+    llMat<-detModFuncLOO(data,post,assump,likelihoodFunc,birthType)
+    llMat2<-detModFuncLOO(data,post2,assump,likelihoodFunc,birthType)
+
+    nlength<-ifelse(nrow(llMat)<nrow(llMat2),nrow(llMat),nrow(llMat2))
+
+
+    llMat10<-rbind(llMat,llMat2)[1:(2*nlength),]
+
+    post<-as.matrix(post)
+
+    rel_n_eff <- relative_eff(exp(post[,c(33:48)]),chain_id =rep(1,nrow(post)) )
+
+    #llMat<-detModFuncLOO_ind(data[2,],post,assump,likelihoodFunc)
+    loo_3<-loo(post[,c(33:48)], r_eff = rel_n_eff, cores = 11, moment_match = TRUE)
+    #loo_3 <- loo(detModFuncLOO_ind, data = obsData[-1,], draws = post, r_eff = NA,likelihoodFunc=likelihoodFunc,assump=assump,birthType=birthType,cores=10)
+    #  return(loo(llMat, r_eff = rel_n_eff, cores = 11))
+    return(list(loo_3,llMat,rel_n_eff))
+  }
+
 

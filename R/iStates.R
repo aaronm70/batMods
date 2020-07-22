@@ -32,12 +32,11 @@ iState<-function(n,prms){
 }
 
 scalarFunc<-function(currentParams,m,mu,b,omegam,mj,s,phi){
-jspan=1.3
+jspan=15.55/12#juvenile stage span of ~15.55 months
   omegam <- currentParams$omega_m_Val                           #maternal immune waning rate
-  mu <- currentParams$mu_Val                    #maturation rate among non-newborn juveniles
+  mu <- 1/((jspan) - (1/omegam))
   mj_Val<-currentParams$mj_Val
   m_Val<-currentParams$m_Val
-
   m <- (omegam+mj_Val)*((mj_Val+mu)/omegam)*m_Val/mu
 
   #demographic parameter values

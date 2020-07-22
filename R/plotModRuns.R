@@ -48,12 +48,12 @@ modPlotFuncX <-
 
     prms$betaFXVal <- betaMean(prms)
 
-    initialState <- iState(1, prms)
     prms[11] <- ifelse(prms[11] != 0, 10 ^ prms[11], 0) #kappa
-    prms[10] <- ifelse(prms[10] != 0, 10 ^ prms[10], 0) #kappa
-    prms[15] <- ifelse(prms[15] != 0, 10 ^ prms[15], 0) #kappa
-    prms[2] <- ifelse(prms[2] != 0, 10 ^ prms[2], 0) #kappa
+    prms[10] <- ifelse(prms[10] != 0, 10 ^ prms[10], 0) #epsilon
+    prms[15] <- ifelse(prms[15] != 0, 10 ^ prms[15], 0) #rho
+    prms[2] <- ifelse(prms[2] != 0, 10 ^ prms[2], 0) #gamma
 
+    initialState <- iState(1, prms)
 
     pr <- as.numeric(prms)
     #initialise model
@@ -169,7 +169,7 @@ modPlotFuncX <-
       simDatTMP$R0_out<-as.vector(tapply(simDat$R0_out, simDat$days, FUN = sum)) #add sume of daily new cases
       simDat2 <- simDatTMP[(18406):(18770), ]
 
-      r0[l, ] <- simDat2$R0_out
+            r0[l, ] <- simDat2$R0_out
 
 
       simDat3 <- merge(simDat2,
@@ -279,14 +279,14 @@ modPlotFuncX <-
         geom_point(aes(y = prev),
                    col = "#102F47",
                    size = 3,
-                   alpha = 0.01) +
+                   alpha = 0.9) +
         xlab("Date") +
         ylab("Seropositive prevalence") +
         geom_errorbar(
           aes(ymin = lower, ymax = upper),
           width = .2,
           position = position_dodge(0.05),
-          alpha = 0.01,
+          alpha = 0.9,
           colour = "#102F47"
         ) +
         geom_point(color = "purple",
@@ -302,13 +302,13 @@ modPlotFuncX <-
         geom_point(aes(y = pcrPrev),
                    col = "#102F47",
                    size = 3,
-                   alpha = 0.01) +
+                   alpha = 0.9) +
         xlab("Date") +
         ylab("Indv. PCR prevalence") +
         geom_errorbar(
           aes(ymin = PCRLwr, ymax = PCRUpr),
           width = .2,
-          position = position_dodge(0.05),
+          position = position_dodge(0.9),
           alpha = 0.01,
           colour = "#102F47"
         ) +
@@ -419,12 +419,12 @@ modPlotFuncX <-
         geom_errorbar(
           aes(ymin = low, ymax = up),
           width = .2,
-          position = position_dodge(0.05),
+          position = position_dodge(0.9),
           alpha = 0.01,
           colour = "#102F47"
         ) +
         geom_point(col = "#102F47",
-                   alpha = 0.01,
+                   alpha = 0.9,
                    size = 3) +
         geom_point(
           aes(y = value, x = Date),
@@ -570,3 +570,4 @@ if(params$c_val2==1){
   return(g1)
 
 }
+

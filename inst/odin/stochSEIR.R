@@ -135,7 +135,7 @@ MAB<-(Ma_births)
 
 update(Sn) <- if ((Sn + SNB - B_snSumBIN + n_En_Sn + n_Rn_Sn+n_In_Sn)<=0) 0 else (Sn + SNB - B_snSumBIN + n_En_Sn + n_Rn_Sn+n_In_Sn)
 update(En) <- if ((En - B_enSumBIN + n_Sn_En+n_In_En)<=0) 0 else (En - B_enSumBIN + n_Sn_En+n_In_En)
-update(In) <- if (( In - B_inSumBIN+ n_Sn_In + n_En_In)<=0) 0 else (In - B_inSumBIN+ n_Sn_In + n_En_In)
+update(In) <- if (( In - B_inSumBIN+ n_Sn_In + n_En_In)<=1) 1 else (In - B_inSumBIN+ n_Sn_In + n_En_In)
 update(Rn) <- if ((Rn - B_RnSumBIN+ n_En_Rn+n_In_Rn)<=0) 0 else (Rn - B_RnSumBIN+ n_En_Rn+n_In_Rn)
 update(Ma) <- if ((Ma + MAB - B_maSumBIN)<=0) 0 else (Ma + MAB - B_maSumBIN)
 
@@ -256,7 +256,7 @@ n_Ma_Sj <- B_ma[1]
 ## transitions between juvenile compartments:
 update(Sj) <- if ((Sj - B_sjSumBIN + n_Sn_Sj + n_Ma_Sj + n_Ej_Sj  + n_Rj_Sj+ n_Ij_Sj)<=0) 0 else (Sj - B_sjSumBIN + n_Sn_Sj + n_Ma_Sj + n_Ej_Sj  + n_Rj_Sj+ n_Ij_Sj)
 update(Ej) <- if ((Ej -  B_ejSumBIN+ n_En_Ej + n_Sj_Ej + n_Ij_Ej)<=0) 0 else (Ej -  B_ejSumBIN+ n_En_Ej + n_Sj_Ej+n_Ij_Ej)
-update(Ij) <-if (( Ij - B_ijSumBIN + n_In_Ij + n_Sj_Ij + n_Ej_Ij)<=0) 0 else (Ij - B_ijSumBIN + n_In_Ij + n_Sj_Ij + n_Ej_Ij)
+update(Ij) <-if (( Ij - B_ijSumBIN + n_In_Ij + n_Sj_Ij + n_Ej_Ij)<=1) 1 else (Ij - B_ijSumBIN + n_In_Ij + n_Sj_Ij + n_Ej_Ij)
 update(Rj) <- if ((Rj - B_rjSumBIN + n_Rn_Rj + n_Ej_Rj + n_Ij_Rj)<=0) 0 else (Rj - B_rjSumBIN + n_Rn_Rj + n_Ej_Rj+n_Ij_Rj)
 
 
@@ -348,7 +348,7 @@ n_Rj_Sj <- B_rj[3]
 ## transitions between adult male compartments:
 update(Sm) <- if((Sm - B_smSumBIN + (n_Sj_SmSf/2) + n_Em_Sm + n_Im_Sm + n_Rm_Sm)<=0) 0 else (Sm - B_smSumBIN + (n_Sj_SmSf/2) + n_Em_Sm + n_Im_Sm + n_Rm_Sm)
 update(Em) <- if((Em - B_emSumBIN + (n_Ej_EmEf/2) + n_Sm_Em + n_Im_Em)<=0) 0 else (Em - B_emSumBIN + (n_Ej_EmEf/2) + n_Sm_Em + n_Im_Em)
-update(Im) <- if((Im - B_imSumBIN + n_Sm_Im + n_Em_Im+(0.5*n_Ij_ImIf))<=0) 0 else (Im - B_imSumBIN + n_Sm_Im + n_Em_Im+(0.5*n_Ij_ImIf))
+update(Im) <- if((Im - B_imSumBIN + n_Sm_Im + n_Em_Im+(0.5*n_Ij_ImIf))<=1) 1 else (Im - B_imSumBIN + n_Sm_Im + n_Em_Im+(0.5*n_Ij_ImIf))
 update(Rm) <- if((Rm - B_rmSumBIN+ (n_Rj_RmRf/2) + n_Em_Rm + n_Im_Rm)<=0) 0 else (Rm - B_rmSumBIN+ (n_Rj_RmRf/2) + n_Em_Rm + n_Im_Rm)
 
 #B_sm
@@ -428,7 +428,7 @@ n_Rm_Sm <- B_rm[2]
 ## transitions between adult male compartments:
 update(Sf) <- if((Sf - B_sfSumBIN+  (n_Sj_SmSf/2) + n_Ef_Sf + n_If_Sf + n_Rf_Sf)<=0) 0 else (Sf - B_sfSumBIN +  (n_Sj_SmSf/2) + n_Ef_Sf + n_If_Sf + n_Rf_Sf)
 update(Ef) <- if((Ef - B_efSumBIN + (n_Ej_EmEf/2) + n_Sf_Ef + n_If_Ef)<=0) 0 else (Ef - B_efSumBIN + (n_Ej_EmEf/2) + n_Sf_Ef + n_If_Ef)
-update(If) <- if((If - B_ifSumBIN + n_Sf_If + n_Ef_If+(0.5*n_Ij_ImIf))<=0) 0 else (If - B_ifSumBIN + n_Sf_If + n_Ef_If+(0.5*n_Ij_ImIf))
+update(If) <- if((If - B_ifSumBIN + n_Sf_If + n_Ef_If+(0.5*n_Ij_ImIf))<=1) 1 else (If - B_ifSumBIN + n_Sf_If + n_Ef_If+(0.5*n_Ij_ImIf))
 update(Rf) <- if((Rf - B_rfSumBIN + (n_Rj_RmRf/2) + n_Ef_Rf + n_If_Rf)<=0) 0 else (Rf - B_rfSumBIN + (n_Rj_RmRf/2) + n_Ef_Rf + n_If_Rf)
 
 #B_s

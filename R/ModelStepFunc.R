@@ -72,6 +72,9 @@ detModFunc<-function(params,obsData,assump,likelihoodFunc,birthType){
     params$gamma_2_Val<-ifelse(params$gamma_2_Val>-1,10^params$gamma_2_Val,-1)
   }
 
+  #calculate mu from juvenile lifespan and mat immune waning (juv stage of ~ 15.55 months)
+  params$mu_Val<- 1/((15.55/12) - (1/params$omega_m_Val))
+
   mod <-
     detSEIR(
       Sn_ini = initialState[1],
@@ -116,7 +119,8 @@ detModFunc<-function(params,obsData,assump,likelihoodFunc,birthType){
       dt=365*4,
       birthType=birthType,
       betaFX=params$betaFX,
-      betaFXVal=params$betaFXVal
+      betaFXVal=params$betaFXVal,
+      mu_Val=params$mu_Val
 
     )
   tx = seq(currentTime, nextTime)
@@ -126,10 +130,10 @@ detModFunc<-function(params,obsData,assump,likelihoodFunc,birthType){
   for (i in c(1:(nrow(obsData)-1))){
     detMod2<-simDat[obsData$NumDays[i+1],-1]
     ll=rbind(ll,mapply(likelihoodFunc,
-                 S=sum((as.vector(detMod2[c(1:4)]))),
-                 E=sum((as.vector(detMod2[c(6:9)]))),
-                 I=sum((as.vector(detMod2[c(10:13)]))),
-                 R=sum((as.vector(detMod2[c(14:17,5)]))),
+                 S=sum(round(as.vector(detMod2[c(1:4)]))),
+                 E=sum(round(as.vector(detMod2[c(6:9)]))),
+                 I=sum(round(as.vector(detMod2[c(10:13)]))),
+                 R=sum(round(as.vector(detMod2[c(14:17,5)]))),
                  MoreArgs = list(
                    parms = params,
                    N = obsData$negatives[i + 1] + obsData$positives[i + 1],

@@ -13,34 +13,35 @@ plotEnvForc <- function(resultsFile,burn,modNums,saveLoc,prmFile) {
     names(params)<-names(gg)
 
 
-    s = median(gg$S2_val)
-    phi = median(gg$Phi2_val)
+    s = median(gg$S2_val,na.rm=T)
+    phi = median(gg$Phi2_val,na.rm=T)
     c = median(gg$c_val2)
     x <- seq(as.Date("2013-06-01"), as.Date("2014-06-01"), "days")
     x <- yday(x) / 365
 
 
     if (i == 3) {
-      medVal <- 10 ^ median(gg$epsilon_Val)
-      ciValsEp <- 10 ^ HPDinterval(as.mcmc(gg$epsilon_Val),prob=.89)
+      medVal <- median(gg$omega_2_Val,na.rm = T)
+      ciValsEp <- HPDinterval(as.mcmc(gg$omega_2_Val),prob=.89)
 
-      sDriveEpOrig <- c * exp(-s * (cos(pi * x - 1)) ^ 2)
+      sDriveEpOrig <- c * exp(-s * (cos(pi * x - phi)) ^ 2)
       sDriveEp <- medVal * sDriveEpOrig
       sDriveEp <- as.data.frame(sDriveEp)
       sDriveEp$date <-
         seq(as.Date("2013-06-01"), as.Date("2014-06-01"), "days")
 
       G3 <- ggplot(sDriveEp, aes(y = sDriveEp, x = date)) +
+        geom_rect(xmin=as.Date("2013-06-01"), xmax=as.Date("2013-10-01"),ymin=-Inf,ymax=Inf,fill="lightblue",alpha=0.008)+
+        geom_rect(xmin=as.Date("2014-04-01"), xmax=as.Date("2014-06-01"),ymin=-Inf,ymax=Inf,fill="lightblue",alpha=0.008)+
         geom_line(colour = "purple", size = 1.5) +
         theme_bw(base_size = 20) +
-        scale_x_date(date_breaks = "2 months" , date_labels = "%b") +
+           scale_x_date(date_breaks = "2 months" , date_labels = "%b") +
         ylab(expression(epsilon[t] ~ (year ^ -1))) +
         geom_ribbon(
           aes(ymin = sDriveEpOrig * ciValsEp[1], ymax = sDriveEpOrig * ciValsEp[2]),
           fill = "purple",
           alpha = 0.3
         )
-
     }
 
     if (i == 4) {

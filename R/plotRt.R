@@ -14,7 +14,7 @@ plotAllRt <- function(fileLoc,Rt = F,saveLoc,prmFile,burn,modNums) {
         gg,
         assum = prmFile$assump[i],
         fxd = fxdY,
-        iters = 100,
+        iters = 10,
         pName = i,
         birthType = birthType,
         Rt = Rt,

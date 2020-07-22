@@ -1,4 +1,3 @@
-
 library(magrittr)
 library("dplyr")
 library("odin")
@@ -28,7 +27,8 @@ fileLocUrine="/home/aaron/henrda-underRoostUrine.csv"
 prmFileLoc="/home/aaron/ModelSetups.csv"
 
 }
-set.seed(2)
+
+set.seed(100)
 
 #read in bat data for boonah
 obsDataBoonah<-boonahDatFunc(ret="obs",species="BFF",fileLoc=fileLoc)
@@ -55,18 +55,28 @@ obsDataBoonah<-rbind(data.frame(Date=as.Date("1993-06-19"),positives=as.numeric(
 obsDataBoonah<-weekification(obsDataBoonah)
 
 obsData<-obsDataBoonah
-
+set.seed(500)
 ##read in parameter list
 prmLst<-prmLstFunc(prmFileLoc) #list of model structures and setups with associated starting parameter values
 
 
-ff2<-mcmcSampler(initParams=prmLst[[4]], #fit to one of the model structures, use mcmapply to fit to multiple at once
+#calculate maturation rates from maternal immunity etc.
+#nspan <- 0.555       #duration of newborn period (i.e., duration maternal immunity)
+#omegam <- 1/nspan                           #maternal immune waning rate
+#jspan<-15.4/12 #15.4 approx months of juvenile lifespan
+#mu <- 1/(jspan - nspan)                     #maturation rate among non-newborn juveniles
+#span <- 1/m + jspan
+
+
+
+#odin_package("/Users/alm204/Documents/Cambridge/models/batMods/batMods/")
+ff4<-mcmcSampler(initParams=prmLst[[6]], #fit to one of the model structures, use mcmapply to fit to multiple at once
              sdProps=NULL,
              maxSddProps=NULL,
-             niter=9900,
-             particleNum=50,
-             proposer = multiv.proposer,
-             proposerType = "block",
+             niter=10000,
+             particleNum=2,
+             proposer = sequential.proposer,
+             proposerType = "seq",
              startAdapt = 1000,
              nburn = 50,
              acceptanceRate = 0.3,
@@ -75,8 +85,8 @@ ff2<-mcmcSampler(initParams=prmLst[[4]], #fit to one of the model structures, us
              tell=5,
              monitoring =2,
              oDat=obsData,
-             likelihoodFunc = likelihoodFuncBoonahStoch,
+             likelihoodFunc = likelihoodFuncBoonah,
              priorFunc=lpriorBoonah,
-             switch=500,
+             switch=100000,
              switchBlock = 50000,
              juvenileInfection=F)

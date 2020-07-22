@@ -29,7 +29,7 @@ paramsFunc(
   gammaVer = ifelse(gamma_1_Val > 0, 1, 2),
   betaVer = 2,
   S2_val = runif(1, 1, 25),
-  d_val = runif(1, 1, 25),
+  d_val = runif(1, 1, 10),
   oDist1 = 2,
   oDist_u = runif(1, 0, 3),
   c_val2 = 1,

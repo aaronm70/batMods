@@ -2152,10 +2152,10 @@ void stochSEIR_rhs(stochSEIR_internal* internal, size_t step, double * state, do
   state_next[15] = ((Rm - B_rmSumBIN + (n_Rj_RmRf / (double) 2) + n_Em_Rm + n_Im_Rm) <= 0 ? 0 : (Rm - B_rmSumBIN + (n_Rj_RmRf / (double) 2) + n_Em_Rm + n_Im_Rm));
   state_next[13] = ((Rn - B_RnSumBIN + n_En_Rn + n_In_Rn) <= 0 ? 0 : (Rn - B_RnSumBIN + n_En_Rn + n_In_Rn));
   state_next[0] = ((Sn + SNB - B_snSumBIN + n_En_Sn + n_Rn_Sn + n_In_Sn) <= 0 ? 0 : (Sn + SNB - B_snSumBIN + n_En_Sn + n_Rn_Sn + n_In_Sn));
-  state_next[12] = ((If - B_ifSumBIN + n_Sf_If + n_Ef_If + (0.5 * n_Ij_ImIf)) <= 0 ? 0 : (If - B_ifSumBIN + n_Sf_If + n_Ef_If + (0.5 * n_Ij_ImIf)));
-  state_next[10] = ((Ij - B_ijSumBIN + n_In_Ij + n_Sj_Ij + n_Ej_Ij) <= 0 ? 0 : (Ij - B_ijSumBIN + n_In_Ij + n_Sj_Ij + n_Ej_Ij));
-  state_next[11] = ((Im - B_imSumBIN + n_Sm_Im + n_Em_Im + (0.5 * n_Ij_ImIf)) <= 0 ? 0 : (Im - B_imSumBIN + n_Sm_Im + n_Em_Im + (0.5 * n_Ij_ImIf)));
-  state_next[9] = ((In - B_inSumBIN + n_Sn_In + n_En_In) <= 0 ? 0 : (In - B_inSumBIN + n_Sn_In + n_En_In));
+  state_next[12] = ((If - B_ifSumBIN + n_Sf_If + n_Ef_If + (0.5 * n_Ij_ImIf)) <= 1 ? 1 : (If - B_ifSumBIN + n_Sf_If + n_Ef_If + (0.5 * n_Ij_ImIf)));
+  state_next[10] = ((Ij - B_ijSumBIN + n_In_Ij + n_Sj_Ij + n_Ej_Ij) <= 1 ? 1 : (Ij - B_ijSumBIN + n_In_Ij + n_Sj_Ij + n_Ej_Ij));
+  state_next[11] = ((Im - B_imSumBIN + n_Sm_Im + n_Em_Im + (0.5 * n_Ij_ImIf)) <= 1 ? 1 : (Im - B_imSumBIN + n_Sm_Im + n_Em_Im + (0.5 * n_Ij_ImIf)));
+  state_next[9] = ((In - B_inSumBIN + n_Sn_In + n_En_In) <= 1 ? 1 : (In - B_inSumBIN + n_Sn_In + n_En_In));
   state_next[3] = ((Sf - B_sfSumBIN + (n_Sj_SmSf / (double) 2) + n_Ef_Sf + n_If_Sf + n_Rf_Sf) <= 0 ? 0 : (Sf - B_sfSumBIN + (n_Sj_SmSf / (double) 2) + n_Ef_Sf + n_If_Sf + n_Rf_Sf));
   state_next[1] = ((Sj - B_sjSumBIN + n_Sn_Sj + n_Ma_Sj + n_Ej_Sj + n_Rj_Sj + n_Ij_Sj) <= 0 ? 0 : (Sj - B_sjSumBIN + n_Sn_Sj + n_Ma_Sj + n_Ej_Sj + n_Rj_Sj + n_Ij_Sj));
   state_next[2] = ((Sm - B_smSumBIN + (n_Sj_SmSf / (double) 2) + n_Em_Sm + n_Im_Sm + n_Rm_Sm) <= 0 ? 0 : (Sm - B_smSumBIN + (n_Sj_SmSf / (double) 2) + n_Em_Sm + n_Im_Sm + n_Rm_Sm));

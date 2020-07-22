@@ -112,11 +112,11 @@ betaMean<-function(params){
   gamma_2_Val<-params$gamma_2_Val
 
   if(params$gammaVer==0){
-    epsilon_Val<-params$epsilon_Val*sDrive
-    rho_Val<-params$rho_Val
+    epsilon_Val<-10^params$epsilon_Val*sDrive
+    rho_Val<-10^params$rho_Val
   }
   if(params$gammaVer>0){
-    gamma_2_Val<-params$gamma_2_Val*sDrive
+    gamma_2_Val<-10^params$gamma_2_Val*sDrive
   }
 
  #
@@ -124,8 +124,8 @@ betaMean<-function(params){
  #   ((epsilon_Val+params$m_Val)*(gamma_2_Val+params$m_Val+rho_Val)-epsilon_Val*rho_Val)
  #
   return(mean(params$R0_Val*((epsilon_Val+params$sigma_2_Val+params$m_Val)*
-                                       (params$gamma_2_Val+params$m_Val+rho_Val)
-                                     -epsilon_Val*rho_Val)/(params$kappa_Val*(epsilon_Val+params$sigma_2_Val+params$m_Val))))
+                                       (gamma_2_Val+params$m_Val+rho_Val)
+                                     -epsilon_Val*rho_Val)/(10^params$kappa_Val*(epsilon_Val+params$sigma_2_Val+params$m_Val))))
 }
 
 
@@ -225,7 +225,7 @@ if(is.null(initParams$lFunc)!=T )likelihoodFunc<-initParams$lFunc else print("No
   curVal[is.na(curVal)]<--10000000
   ## Initialize matrix to store MCMC chain
   out <- matrix(NA, nr = niter, nc = length(currentParams) + 1+(nrow(obsData)-1))
-  out[1,] <- c(as.numeric(currentParams), ll = curVal+priorFunc(currentParams),curValX) ## add first value
+  out[1,] <- c(as.numeric(currentParams), ll = curVal,curValX) ## add first value
   colnames(out) <- c(names(currentParams), 'll',c(paste0("pW",(1:(nrow(obsData)-1))))) ## name columns
     originalCovar <-
     get('covar', envir = .GlobalEnv)## Store original covariance matrix
@@ -360,8 +360,9 @@ proposal$betaFXVal<-if(proposal$betaFX==1) betaMean(proposal) else 0
       prmNum <-1#if parameter number reaches end of parameters, switch back to start
 
 
-    if(iter %% 10000 == 0) write.csv(as.mcmc(out[1:nrow(out) > (nburn + 1),]),paste0("/home/aaron/res_",modNum,".csv"))
-    }
+    if(iter %% 10000 == 0) write.csv(as.mcmc(out[1:iter > (nburn + 1),]),paste0("/home/aaron/res_",modNum,".csv"))
+    if(iter %% 10000 == 0) gc()
+     }
 
 
   colnames(out) <- c(names(currentParams), 'll',c(paste0("pW",(1:(nrow(obsData)-1)))))

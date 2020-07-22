@@ -1,9 +1,9 @@
-library(miscTools)
-library(ggpubr)
-library(binom)
-library(reshape2)
-library(loo)
-library(cowplot)
+install.packages("miscTools")
+install.packages("ggpubr")
+install.packages("binom")
+install.packages("reshape2")
+install.packages("loo")
+install.packages("ggplot2")
 
 ##File locations##
 if(Sys.info()['sysname']=="Darwin"){
@@ -19,10 +19,10 @@ if(Sys.info()['sysname']=="Darwin"){
 prmLst<-prmLstFunc(prmFileLoc)
 
 
-resultsFile<-"/Users/alm204/Documents/Cambridge/results/jul1/res_"
+resultsFile<-"/Users/alm204/Documents/Cambridge/results/jul20/res_"
 prmFile<-read.csv("/Users/alm204/Documents/ModelSetups.csv")#read in model setups
 saveLoc<-"/Users/alm204/OneDrive/Cambridge/Projects/model_comparisons/figures/"
-burn<-110000
+burn<-11000
 modNums<-c(1:8)#model numbers to plot (see model setups table, prmFile)
 #Plot Rt values
 plotAllRt(fileLoc= resultsFile,Rt=T,saveLoc=saveLoc,burn=burn,modNums=modNums,prmFile=prmFile)
