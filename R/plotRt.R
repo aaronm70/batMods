@@ -1,11 +1,15 @@
 
 
-plotAllRt <- function(fileLoc,Rt = F,saveLoc,prmFile,burn,modNums) {
+plotAllRt <- function(resultsFile,Rt = F,saveLoc,prmFile,burn,modNums,thin=10) {
   for (i in modNums) {
 
     print(i)
 
-    gg<-readResFunc(fileLoc=fileLoc,i=i,burn=burn,prmFile=prmFile)
+
+
+    gg<-readResFunc(fileLoc=resultsFile,i=i,burn=burn,prmFile=prmFile,thin=thin)
+
+    i<-if(i == 24) 8 else i
 
     fxdY <- if (prmFile$lFunc[i] == "prFxOsc") T  else  F
     birthType <- if (prmFile$birthType[i] == "noImmune") 1 else 0
@@ -14,7 +18,7 @@ plotAllRt <- function(fileLoc,Rt = F,saveLoc,prmFile,burn,modNums) {
         gg,
         assum = prmFile$assump[i],
         fxd = fxdY,
-        iters = 10,
+        iters = 100,
         pName = i,
         birthType = birthType,
         Rt = Rt,
@@ -29,13 +33,15 @@ plotAllRt <- function(fileLoc,Rt = F,saveLoc,prmFile,burn,modNums) {
 if(Rt==F) stop
 
   ggRt <-
-    ggarrange(G4 + ggtitle("SILI (Mat. Immunity) (EF)"),
-              G3 + ggtitle("SILI (EF)"),
+    ggarrange(G4 + ggtitle("SILI (EF)"),
+              G3 + ggtitle("SILI (EF) (No Mat. Immunity)"),
+              G2 + ggtitle("SILI"),
+              G1 + ggtitle("SILI (No Mat. Immunity)"),
               G6 + ggtitle("SIR (EF)"),
-              G8 + ggtitle("SIRS (EF)"),
-              G2 + ggtitle("SILI (Mat. Immunity)"),
-              G1 + ggtitle("SILI"),
               G5 + ggtitle("SIR"),
+
+              G8 + ggtitle("SIRS (EF)"),
+
               G7 + ggtitle("SIRS"),
               common.legend = T,legend="right"
               )

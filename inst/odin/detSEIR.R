@@ -68,6 +68,9 @@ birthType<-user(0)
 betaFX<-user(0)
 betaFXVal<-user(0)
 
+initial(L_I_out)<-0
+initial(S_I_out)<-0
+
 ##sDrive component
 envOscType<-user(0)
 S2_val<-user(0)
@@ -137,8 +140,11 @@ Sbirths<- if(birthType==1) (b*(Sf + If+Ef) )/dt else (b*(Sf + If) )/dt
 MaBirths<- if(birthType==1) (b*(Rf))/dt else (b*(Rf+Ef))/dt
 
 
-update(R0_out)<-R0_Val*((Sn+Sj+Sf+Sm)/N)#((beta_2x*N)*(epsilon_ValS+m_Val))/
+update(R0_out)<-beta_2*((Sn+Sj+Sf+Sm)*(In+Ij+If+Im))#((beta_2x*N)*(epsilon_ValS+m_Val))/
   #((epsilon_ValS+m_Val)*(gamma_2_Val+m_Val+rho_Val)-epsilon_ValS*rho_Val)
+
+update(L_I_out)<- epsilon*(En+Ej+Ef+Em)
+update(S_I_out)<- betI*(Sn+Sj+Sf+Sm)
 
 
 betSN<-omega_m+mj*(N/kappa) + ((beta_1+beta_2)*(If+Im+Ij+In))

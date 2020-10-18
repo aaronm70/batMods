@@ -19,6 +19,10 @@ plotLooic <- function(fileNme,
   loicVals2$modType[loicVals2$modType == 2] <- "SIR"
   loicVals2$modType[loicVals2$modType == 1] <- "SILI"
 
+  loicVals[,1]<-as.numeric(loicVals[,1])
+  loicVals[,2]<-as.numeric(loicVals[,2])
+  if (type != "loo") loicVals[,3]<-as.numeric(loicVals[,3])
+
   if (type == "loo") {
     loicVals$seUp <- loicVals$Looic + loicVals$se
     loicVals$seLow <- loicVals$Looic - loicVals$se

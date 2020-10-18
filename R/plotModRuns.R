@@ -33,6 +33,7 @@ modPlotFuncX <-
     trajectoriesPos <- matrix(nrow = iters, ncol = 16)
     trajectoriesPOP <- matrix(nrow = iters, ncol = 16)
     r0 <- matrix(nrow = iters, ncol = 365)
+    r02 <- matrix(nrow = iters, ncol = 365)
 
     trajectoriesPcrPos <- matrix(nrow = iters, ncol = 16)
 
@@ -169,7 +170,8 @@ modPlotFuncX <-
       simDatTMP$R0_out<-as.vector(tapply(simDat$R0_out, simDat$days, FUN = sum)) #add sume of daily new cases
       simDat2 <- simDatTMP[(18406):(18770), ]
 
-            r0[l, ] <- simDat2$R0_out
+            r0[l, ] <- simDat2$R0_out#simDat2$S_I_out
+            r02[l, ] <- simDat2$L_I_out
 
 
       simDat3 <- merge(simDat2,
@@ -212,14 +214,20 @@ modPlotFuncX <-
 
 
     r0M <- melt(t(r0))
+    r0M$LI <- melt(t(r02))$value
+
     r0M$Date <-
       seq(as.Date("2013-06-04"), as.Date("2014-06-03"), "days")
 
 
     gRT <- ggplot(r0M, aes(x = Date, y = value, group = Var2)) +
       geom_line(col = "purple",
-                size = .5,
+                size = 1,
                 alpha = .2) +
+    #  geom_line( y = r0M$LI,col = "orange",
+    #            size = 1,
+    #            alpha = .2) +
+    #  ylim(0,max(c(r0M$LI,r0M$value),na.rm = T))+
       xlab("Date") +
       ylab("New cases daily") +
       theme_bw(base_size = 20) +
@@ -328,8 +336,7 @@ modPlotFuncX <-
       #########plot UR PCR simulation against observed##############
       ######################################################################
 
-      if (fxd == T)
-        params$pcrProb2 <- 0.9999
+
       prbx <- NULL
       prb2x <- NULL
       toteski <- NULL
@@ -354,12 +361,12 @@ modPlotFuncX <-
         Ia[is.na(Ia)] <- 0
 
         Np = 46 #number of pooled samples
-        x = rep(round(1 + params$d_val), length(Ia)) #number of bats contributing to each pool
+        x = 1#rep(round(1 + params$d_val), length(Ia)) #number of bats contributing to each pool
         Pnp = obsData[-1, 9]  #pool prevelance - prevelance in all pools
         ki = x * Np * (1 - (1 - Pnp) ^ (1 / x)) #number of infected bats contributing to the pooled samples
         #this assumes no variation in diagnostic tests with pool size
         prbUR <-
-          ((Ia * params$pcrProb2) / rowSums(simDat2[, c(2:18)])) #each simulated bat has a probability of shedding prb = prevelance based on random shedding events
+          ((params$d_val*Ia * params$pcrProb2) / rowSums(simDat2[, c(2:18)])) #each simulated bat has a probability of shedding prb = prevelance based on random shedding events
         Npx = x * Np #number bats contributing to pooled samples
         prbUR <- ifelse(prbUR >= 1, 0.99, prbUR)
         prbUR <- ifelse(prbUR <= 0, 0.00001, prbUR)
@@ -435,6 +442,8 @@ modPlotFuncX <-
         ) +
         ylab("under roost prevalence") + theme_bw(base_size = 20) +
         scale_x_date(date_breaks = "2 months" , date_labels = "%b")
+
+
       g2All<-addPulse(g2All,params,resXS2all,birthType,datesX=r0M$Date)
       g2All$layers<-rev(g2All$layers)
 
@@ -470,7 +479,7 @@ addPulse<-function(g1,params,plotDat,birthType,datesX){
 
   if(params$c_val2==1){
   ePulse<-params$c_val2 * exp(-params$S2_val*(cos(3.141593*(yday(seq(as.Date("2013-06-04"), as.Date("2014-06-03"), "days"))/365) - params$Phi2_val))^2)
-  cutOff<-ifelse(params$epsilon_Val==0,0.003,0.1)
+  cutOff<-ifelse(params$epsilon_Val==0,0.05,0.01)
   ePulseVals<-as.data.frame(ePulse[ePulse>cutOff])
   ePulseVals$tile<-ntile(ePulseVals, 8)
   ePulseVals$dates<-datesX[which(ePulse>cutOff)]
@@ -502,7 +511,7 @@ addPulse<-function(g1,params,plotDat,birthType,datesX){
                                                 ymin = -Inf,ymax = Inf),alpha = 0.01,fill = "blue")
 
 if(params$c_val2==1){
-  if(params$epsilon_Val==0|| birthType==1) {
+  if(params$epsilon_Val==0) {
 
 
 
@@ -525,6 +534,7 @@ if(params$c_val2==1){
 
   } else {
 
+    if(birthType==0){
   g1=g1 +   geom_rect( data = head(plotDat),aes(xmin = ePulseValsP$min[13],xmax = ePulseValsP$max[13],
                                                 ymin = -Inf,ymax = Inf),alpha = 0.08,fill = "green")
   g1=g1 +   geom_rect( data = head(plotDat),aes(xmin = ePulseValsP$min[14],xmax = ePulseValsP$max[14],
@@ -556,7 +566,28 @@ if(params$c_val2==1){
                                                 ymin = -Inf,ymax = Inf),alpha = 0.01,fill = "green")
   g1=g1 +   geom_rect( data = head(plotDat),aes(xmin = ePulseValsP$min[2],xmax = ePulseValsP$min[4],
                                                 ymin = -Inf,ymax = Inf),alpha = 0.005,fill = "white")
+    }
+    if(birthType==1){
 
+      g1=g1 +   geom_rect( data = head(plotDat),aes(xmin = ePulseValsP$max[6],xmax = ePulseValsP$max[4]+30,
+                                                    ymin = -Inf,ymax = Inf),alpha = 0.03,fill = "green")
+      g1=g1 +   geom_rect( data = head(plotDat),aes(xmin = ePulseValsP$max[6],xmax = ePulseValsP$max[4],
+                                                    ymin = -Inf,ymax = Inf),alpha = 0.03,fill = "green")
+      g1=g1 +   geom_rect( data = head(plotDat),aes(xmin = ePulseValsP$max[8],xmax = ePulseValsP$max[4]-30,
+                                                    ymin = -Inf,ymax = Inf),alpha = 0.03,fill = "green")
+      g1=g1 +   geom_rect( data = head(plotDat),aes(xmin = ePulseValsP$max[8],xmax = ePulseValsP$max[4]-60,
+                                                    ymin = -Inf,ymax = Inf),alpha = 0.01,fill = "green")
+
+      g1=g1 +   geom_rect( data = head(plotDat),aes(xmin = ePulseValsP$min[6],xmax = ePulseValsP$max[8]-230,
+                                                    ymin = -Inf,ymax = Inf),alpha = 0.01,fill = "green")
+      g1=g1 +   geom_rect( data = head(plotDat),aes(xmin = ePulseValsP$min[6],xmax = ePulseValsP$max[8]-260,
+                                                    ymin = -Inf,ymax = Inf),alpha = 0.01,fill = "green")
+      g1=g1 +   geom_rect( data = head(plotDat),aes(xmin = ePulseValsP$min[6],xmax = ePulseValsP$max[8]-290,
+                                                    ymin = -Inf,ymax = Inf),alpha = 0.02,fill = "green")
+
+
+
+    }
   }
 }
 

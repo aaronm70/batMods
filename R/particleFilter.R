@@ -58,7 +58,6 @@ pFilt <-
     }
 
     #calculate mu from juvenile lifespan and mat immune waning
-    params$mu_Val<- 1/((15.55/12) - (1/params$omega_m_Val))
 
 
     mod <-
