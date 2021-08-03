@@ -65,6 +65,9 @@ gammaVer<-user(0)
 sigmaVer<-user(0)
 envOscType<-user(0)
 initial(R0_out)<-0
+initial(L_I_out)<-0
+initial(S_I_out)<-0
+
 birthType<-user(0)
 betaFX<-user(0)
 betaFXVal<-user(0)
@@ -121,9 +124,12 @@ phi <- phi_Val
 update(R0_out)<- beta_2*((Sn+Sj+Sf+Sm)*(In+Ij+If+Im)) #((beta_2x*N)*(epsilon_ValS+m_Val))/
   #((epsilon_ValS+m_Val)*(gamma_2_ValS+m_Val+rho_Val)-epsilon_ValS*rho_Val)
 
+update(L_I_out)<- n_En_In +n_Ej_Ij+n_Ef_If+n_Em_Im
+update(S_I_out)<- n_Sn_In +n_Sj_Ij+n_Sf_If+n_Sm_Im
+
 update(timeOsc)<-timeOsc+1/dt
 
-b <-c * exp(-s*(cos(3.141593*timeOsc - phi))^2)
+b <-2*c * exp(-s*(cos(3.141593*timeOsc - phi))^2)
 
 ## transitions between neonatal compartments:
 Sn_births <- if(birthType==1) (b*(Sf + If+Ef) )/dt else (b*(Sf + If) )/dt

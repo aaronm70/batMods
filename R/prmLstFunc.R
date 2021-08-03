@@ -1,3 +1,5 @@
+#Choose starting paramters, generally drawn from a uniform or nornal distribution based on any priors or logical constraints
+
 prmLstFunc<-function(fileLoc){
   prmFile<-read.csv(fileLoc)
   prmLst<-NULL

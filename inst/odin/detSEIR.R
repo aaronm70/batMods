@@ -68,6 +68,9 @@ birthType<-user(0)
 betaFX<-user(0)
 betaFXVal<-user(0)
 
+initial(L_I_out)<-0
+initial(S_I_out)<-0
+
 ##sDrive component
 envOscType<-user(0)
 S2_val<-user(0)
@@ -129,16 +132,21 @@ s <- s_Val
 phi <- phi_Val
 
 
-update(timeOsc)<-timeOsc+1/dt
+update(timeOsc)<-timeOsc+(1/dt)
 
-b <-c * exp(-s*(cos(3.141593*timeOsc - phi))^2)
+b <-2*c * exp(-s*(cos(3.141593*timeOsc - phi))^2)
+
+
 
 Sbirths<- if(birthType==1) (b*(Sf + If+Ef) )/dt else (b*(Sf + If) )/dt
 MaBirths<- if(birthType==1) (b*(Rf))/dt else (b*(Rf+Ef))/dt
 
 
-update(R0_out)<-R0_Val*((Sn+Sj+Sf+Sm)/N)#((beta_2x*N)*(epsilon_ValS+m_Val))/
+update(R0_out)<-beta_2*((Sn+Sj+Sf+Sm)*(In+Ij+If+Im))#((beta_2x*N)*(epsilon_ValS+m_Val))/
   #((epsilon_ValS+m_Val)*(gamma_2_Val+m_Val+rho_Val)-epsilon_ValS*rho_Val)
+
+update(L_I_out)<- epsilon*(En+Ej+Ef+Em)
+update(S_I_out)<- betI*(Sn+Sj+Sf+Sm)
 
 
 betSN<-omega_m+mj*(N/kappa) + ((beta_1+beta_2)*(If+Im+Ij+In))
@@ -172,3 +180,4 @@ update(Sf) <-if (Sf+  mu*(Sj/2)-betSmf*Sf+sigma_1*Ef+gamma_1*If+omega_2*Rf <=0) 
 update(Ef) <-if (Ef+  mu*(Ej/2) -(m*(N/kappa)+sigma_1+sigma_2+epsilon)*Ef+(betE*Sf)+rho*If <=0) 0 else Ef+  mu*(Ej/2) -(m*(N/kappa)+sigma_1+sigma_2+epsilon)*Ef+(betE*Sf)+rho*If
 update(If) <-if (If+  mu*(Ij/2)-(m*(N/kappa)+gamma_1+gamma_2+rho)*If+(betI*Sf)+epsilon*Ef <=0) 0 else If+  mu*(Ij/2)-(m*(N/kappa)+gamma_1+gamma_2+rho)*If+(betI*Sf)+epsilon*Ef
 update(Rf) <-if (Rf+  mu*(Rj/2)-(m*(N/kappa)+omega_2)*Rf+sigma_2*Ef+gamma_2*If <=0) 0 else Rf+  mu*(Rj/2)-(m*(N/kappa)+omega_2)*Rf+sigma_2*Ef+gamma_2*If
+

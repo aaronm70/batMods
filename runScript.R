@@ -1,10 +1,9 @@
-library(magrittr)
+library("magrittr")
 library("dplyr")
 library("odin")
 library("lubridate")
 library("readxl")
 library("coda")
-#library("mnormt")
 library("parallel")
 library("R.utils")
 library("tidyr")
@@ -12,8 +11,6 @@ library("batMods")
 library("mgcv")
 library("ggplot2")
 library("rmutil")
-#install.packages("mcmcr")
-#library("lhs")
 
 
 ##File locations (diff locations when running on cluster)##
@@ -22,18 +19,18 @@ fileLoc="data/hendra-virus-test-results-flying-foxes.csv"
 fileLocUrine="data/henrda-underRoostUrine.csv"
 prmFileLoc="data/ModelSetups.csv"
 }else{
-fileLoc="/home/aaron/hendra-virus-test-results-flying-foxes.csv"
-fileLocUrine="/home/aaron/henrda-underRoostUrine.csv"
-prmFileLoc="/home/aaron/ModelSetups.csv"
+fileLoc="data\\hendra-virus-test-results-flying-foxes.csv"
+fileLocUrine="data\\henrda-underRoostUrine.csv"
+prmFileLoc="data\\ModelSetups.csv"
 
 }
 
-set.seed(100)
 
 #read in bat data for boonah
 obsDataBoonah<-boonahDatFunc(ret="obs",species="BFF",fileLoc=fileLoc)
 
 dtt=4#time step - split day by
+
 #add a running total of time steps
 obsDataBoonah$NumDays<-obsDataBoonah$NumDays+yday("2013-06-19") #yday function gives the day of the year
 
@@ -46,47 +43,63 @@ obsDataBoonah<-addUR(obsDataBoonah,fileLocUrine=fileLocUrine)
 obsDataBoonah<-obsDataBoonah[order(obsDataBoonah$Date),]
 obsDataBoonah<-obsDataBoonah[,c(1:5,10:11,14:17,6:9)] #remove some columns that are not required
 
-#add starting date for model (50 years prior to fitting data)
 obsDataBoonah<-rbind(data.frame(Date=as.Date("1993-06-19"),positives=as.numeric(0),negatives=as.numeric(0), pcrPos=as.numeric(0),meanSer=as.numeric(0)
-                                ,NumDays=as.numeric(0),prev=as.numeric(0),fit=as.numeric(0),se.fit=as.numeric(0),upr=as.numeric(0),lwr=as.numeric(0),
-                                PpSp=as.numeric(0),PpSn=as.numeric(0),PnSp=as.numeric(0),PnSn=as.numeric(0)), obsDataBoonah)
+                                   ,NumDays=as.numeric(0),prev=as.numeric(0),fit=as.numeric(0),se.fit=as.numeric(0),upr=as.numeric(0),lwr=as.numeric(0),
+                                   PpSp=as.numeric(0),PpSn=as.numeric(0),PnSp=as.numeric(0),PnSn=as.numeric(0)), obsDataBoonah)
 
 #aggregate data by sampling week
-obsDataBoonah<-weekification(obsDataBoonah)
+obsData<-weekification(obsDataBoonah)
 
-obsData<-obsDataBoonah
-set.seed(500)
-##read in parameter list
+
+
+##read in parameter list and randomly select starting params
 prmLst<-prmLstFunc(prmFileLoc) #list of model structures and setups with associated starting parameter values
-
-
 #calculate maturation rates from maternal immunity etc.
-#nspan <- 0.555       #duration of newborn period (i.e., duration maternal immunity)
+#nspan <- 0.555       #duration of newborn period (i.e., duration maternal immunity) (1.800^-1)
 #omegam <- 1/nspan                           #maternal immune waning rate
-#jspan<-15.4/12 #15.4 approx months of juvenile lifespan
+#jspan<-15.55/12 #15.4 approx months of juvenile lifespan
 #mu <- 1/(jspan - nspan)                     #maturation rate among non-newborn juveniles
-#span <- 1/m + jspan
+library(furrr)
+
+#odin_package("C:\\Users\\aaron\\Documents\\batMods\\batMods")
 
 
 
-#odin_package("/Users/alm204/Documents/Cambridge/models/batMods/batMods/")
-ff4<-mcmcSampler(initParams=prmLst[[6]], #fit to one of the model structures, use mcmapply to fit to multiple at once
+#plan(multisession)
+
+prmLst<-list(prmLst[[2]],prmLst[[4]],prmLst[[7]],prmLst[[8]])
+prmLst[[1]]$modNum<-2
+prmLst[[2]]$modNum<-4
+prmLst[[3]]$modNum<-7
+prmLst[[4]]$modNum<-8
+
+
+##fit using custom pMCMC - generally switching to BayesianTools for a more simple life
+library(future.apply)
+iters=1000000
+plan(multisession)
+
+
+
+gg<-future_mapply(mcmcSampler,initParams=prmLst,MoreArgs = list( #fit to one of the model structures
              sdProps=NULL,
              maxSddProps=NULL,
-             niter=10000,
-             particleNum=2,
+             niter=iters,
+             particleNum=35,
              proposer = sequential.proposer,
              proposerType = "seq",
-             startAdapt = 1000,
-             nburn = 50,
-             acceptanceRate = 0.3,
+             startAdapt = 20000,
+             nburn = iters*0.1,
+             acceptanceRate = 0.25,
              stoch=F,
-             adptBurn =200,
-             tell=5,
+             adptBurn =10000,
+             tell=10000,
              monitoring =2,
              oDat=obsData,
              likelihoodFunc = likelihoodFuncBoonah,
              priorFunc=lpriorBoonah,
-             switch=100000,
-             switchBlock = 50000,
-             juvenileInfection=F)
+             switch=500000,
+             switchBlock = 1000000000,
+             juvenileInfection=F))
+
+saveRDS(gg,"results1Mil.RDS")

@@ -225,6 +225,7 @@ weekification<-function(obsDataBoonah){
   obsDataBoonah$week<-c(rep(0,1),rep(1,2),rep(2,3),rep(3,2),rep(4,4),rep(5,4),rep(6,4),rep(7,4),rep(8,3),rep(9,4),
                         rep(10,1),rep(11,3),rep(12,3),rep(13,3),rep(14,3),rep(15,4),rep(16,2))
 
+
   tmp<-cbind(aggregate(.~week, obsDataBoonah[,c(16,2, 3,4,12,13,14,15)], sum),
              aggregate(.~week, obsDataBoonah[,c(16,5)], mean))[,-9]
 
@@ -234,6 +235,9 @@ weekification<-function(obsDataBoonah){
   obsDataBoonahTmp<-obsDataBoonahTmp[,c(1,2,3,4,9,10:16,5:8)]
   obsDataBoonahTmp<-obsDataBoonahTmp[order(obsDataBoonahTmp$Date),]
   obsDataBoonahTmp$prev<-obsDataBoonahTmp$positives/(obsDataBoonahTmp$positives+obsDataBoonahTmp$negatives)
+
+  #add 50 years previous
+
   return(obsDataBoonahTmp)
 }
 

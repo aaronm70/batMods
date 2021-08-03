@@ -3,11 +3,13 @@
 
 
 ##plot environmental force
-plotEnvForc <- function(resultsFile,burn,modNums,saveLoc,prmFile) {
+plotEnvForc <- function(resultsFile,burn,modNums,saveLoc,prmFile,thin=10) {
   for (i in modNums) {
     prmFile <- read.csv("/Users/alm204/Documents/ModelSetups.csv")
 
-    gg<-readResFunc(fileLoc=resultsFile,i=i,burn=burn,prmFile=prmFile,thin=10)
+    gg<-readResFunc(fileLoc=resultsFile,i=i,burn=burn,prmFile=prmFile,thin=thin)
+    i<-if(i == 24) 8 else i
+
    params<- colMedians(gg)
     params<-as.data.frame(matrix(params,ncol =length(params),byrow = T))
     names(params)<-names(gg)
@@ -21,8 +23,8 @@ plotEnvForc <- function(resultsFile,burn,modNums,saveLoc,prmFile) {
 
 
     if (i == 3) {
-      medVal <- median(gg$omega_2_Val,na.rm = T)
-      ciValsEp <- HPDinterval(as.mcmc(gg$omega_2_Val),prob=.89)
+      medVal <- 10^median(gg$epsilon_Val,na.rm = T)
+      ciValsEp <- 10^HPDinterval(as.mcmc(gg$epsilon_Val),prob=.89)
 
       sDriveEpOrig <- c * exp(-s * (cos(pi * x - phi)) ^ 2)
       sDriveEp <- medVal * sDriveEpOrig
@@ -31,12 +33,10 @@ plotEnvForc <- function(resultsFile,burn,modNums,saveLoc,prmFile) {
         seq(as.Date("2013-06-01"), as.Date("2014-06-01"), "days")
 
       G3 <- ggplot(sDriveEp, aes(y = sDriveEp, x = date)) +
-        geom_rect(xmin=as.Date("2013-06-01"), xmax=as.Date("2013-10-01"),ymin=-Inf,ymax=Inf,fill="lightblue",alpha=0.008)+
-        geom_rect(xmin=as.Date("2014-04-01"), xmax=as.Date("2014-06-01"),ymin=-Inf,ymax=Inf,fill="lightblue",alpha=0.008)+
-        geom_line(colour = "purple", size = 1.5) +
+      geom_line(colour = "purple", size = 1.5) +
         theme_bw(base_size = 20) +
            scale_x_date(date_breaks = "2 months" , date_labels = "%b") +
-        ylab(expression(epsilon[t] ~ (year ^ -1))) +
+        ylab(expression(Transmission~rate:~L%->%I~(epsilon[t] ~ year ^ -1))) +
         geom_ribbon(
           aes(ymin = sDriveEpOrig * ciValsEp[1], ymax = sDriveEpOrig * ciValsEp[2]),
           fill = "purple",
@@ -58,7 +58,7 @@ plotEnvForc <- function(resultsFile,burn,modNums,saveLoc,prmFile) {
         geom_line(colour = "purple", size = 1.5) +
        theme_bw(base_size = 20) +
         scale_x_date(date_breaks = "2 months" , date_labels = "%b") +
-        ylab(expression(epsilon[t] ~ (year ^ -1))) +
+        ylab(expression(Transmission~rate:~L%->%I~(epsilon[t] ~ year ^ -1))) +
         geom_ribbon(
           aes(ymin = sDriveEp2Orig * ciValsEp2[1], ymax = sDriveEp2Orig * ciValsEp2[2]),
           fill = "purple",
@@ -81,7 +81,7 @@ plotEnvForc <- function(resultsFile,burn,modNums,saveLoc,prmFile) {
         geom_line(colour = "purple", size = 1.5) +
         theme_bw(base_size = 20) +
         scale_x_date(date_breaks = "2 months" , date_labels = "%b") +
-        ylab(expression(gamma[t] ~ (year ^ -1))) +
+        ylab(expression(Transmission~rate:~I%->%R~(gamma[t] ~ year ^ -1))) +
         geom_ribbon(
           aes(
             ymin = sDriveGamOrig * ciValsGam[1],
@@ -109,7 +109,7 @@ plotEnvForc <- function(resultsFile,burn,modNums,saveLoc,prmFile) {
         geom_line(colour = "purple", size = 1.5) +
         theme_bw(base_size = 20) +
         scale_x_date(date_breaks = "2 months" , date_labels = "%b") +
-        ylab(expression(omega[t] ~ (year ^ -1))) +
+        ylab(expression(Transmission~rate:~R%->%S~(omega[t] ~ year ^ -1))) +
         geom_ribbon(
           aes(
             ymin = sDriveOmegOrig * ciValsOmeg[1],
@@ -126,10 +126,10 @@ plotEnvForc <- function(resultsFile,burn,modNums,saveLoc,prmFile) {
 
   }
   ggRt <-
-    ggarrange(G4 + ggtitle("SILI (Maternal Immunity)"),
-              G3 + ggtitle("SILI"),
-              G6 + ggtitle("SIR"),
-              G8 + ggtitle("SIRS"),
+    ggarrange(G4 + ggtitle("A) SILI (Maternal Immunity)"),
+              G3 + ggtitle("B) SILI"),
+              G6 + ggtitle("C) SIR"),
+              G8 + ggtitle("D) SIRS"),
               common.legend = T)
   print(ggRt)
   ggsave(

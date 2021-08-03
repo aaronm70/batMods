@@ -32,13 +32,26 @@ iState<-function(n,prms){
 }
 
 scalarFunc<-function(currentParams,m,mu,b,omegam,mj,s,phi){
+
+  b <- (omegam+mj)*((mj+mu)/omegam)*m/mu
+
 jspan=15.55/12#juvenile stage span of ~15.55 months
   omegam <- currentParams$omega_m_Val                           #maternal immune waning rate
   mu <- 1/((jspan) - (1/omegam))
   mj_Val<-currentParams$mj_Val
   m_Val<-currentParams$m_Val
-  m <- (omegam+mj_Val)*((mj_Val+mu)/omegam)*m_Val/mu
+  m<-(omegam+mj_Val)*((mj_Val+mu)/omegam)*m_Val/mu
+  mj<-currentParams$mj_Val
+s<-currentParams$s_Val
+phi<-currentParams$phi_Val
 
+
+  #jspan=15.55/12
+  #nspan <- 1/currentParams$omega_m_Val #duration of newborn period (i.e., duration maternal immunity)
+  #omegam <- params$omega_m_Val# 1/nspan                           #maternal immune waning rate
+  #mu <- params$mu_Val#1/(jspan - nspan)                     #maturation rate among non-newborn juveniles
+
+#jspan<-mu
   #demographic parameter values
   #scaling factor (maximum birth rate)
   bessI <- function(z){
@@ -50,11 +63,11 @@ jspan=15.55/12#juvenile stage span of ~15.55 months
 
 
   #caclulate initial value of birth rate constant (to optimize)
-  c0 <- m/bessI(s/2)*exp(s/2)*sqrt(s/pi)
+  c0 <- b/bessI(s/2)*exp(s/2)*sqrt(s/pi)
   #optimize birth rate constant to minimize adult population growth
-  grow <- function(k){
+  grow <- function(c){
     inner <- function(t){
-      return(k*exp(-s*(cos(pi*t-phi))^2)*exp(-jspan*mj))
+      return(c*exp(-s*(cos(pi*t-phi))^2)*exp(-jspan*mj)) #juv mortality * juve lifespan
     }
     return((integrate(inner,lower=0,upper=1)$value - m)^2)
   }

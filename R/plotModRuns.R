@@ -33,6 +33,7 @@ modPlotFuncX <-
     trajectoriesPos <- matrix(nrow = iters, ncol = 16)
     trajectoriesPOP <- matrix(nrow = iters, ncol = 16)
     r0 <- matrix(nrow = iters, ncol = 365)
+    r02 <- matrix(nrow = iters, ncol = 365)
 
     trajectoriesPcrPos <- matrix(nrow = iters, ncol = 16)
 
@@ -110,7 +111,7 @@ modPlotFuncX <-
 
 
     mod <-
-      stochSEIR(
+      detSEIR(
         Sn_ini = initialState[1],
         Sj_ini = initialState[2],
         Sf_ini = initialState[3],
@@ -137,10 +138,10 @@ modPlotFuncX <-
         R0_Val = params$R0_Val,
         phi_Val = params$phi_Val,
         s_Val = params$s_Val,
-        c_Val = params$c_Val,
+        c_Val =  2*c,#2*params$c_Val,
         omega_m_Val = params$omega_m_Val,
         omega_2_Val = params$omega_2_Val,
-        kappa_Val = params$kappa_Val,
+        kappa_Val = k,#params$kappa_Val,
         epsilon_Val = params$epsilon_Val,
         mj_Val = params$mj_Val,
         betaVer = params$betaVer,
@@ -154,6 +155,8 @@ modPlotFuncX <-
         birthType = birthType,
         betaFX = prms$betaFX,
         betaFXVal = prms$betaFXVal
+       # timeOscIni = (1/(365*4))
+
       )
     tx = seq(currentTime, nextTime * 4)
 
@@ -164,12 +167,15 @@ modPlotFuncX <-
       simDat <- as.data.frame(mod$run(tx))
     days<-rep(1:(nrow(simDat)/4), each=4)
     simDat$days<-c(0,days)
+    simDat$N<-rowSums(simDat[,c(2:18)])
       ind <- seq(1, nrow(simDat), by = 4)
       simDatTMP <- simDat[ind,]
       simDatTMP$R0_out<-as.vector(tapply(simDat$R0_out, simDat$days, FUN = sum)) #add sume of daily new cases
       simDat2 <- simDatTMP[(18406):(18770), ]
 
-            r0[l, ] <- simDat2$R0_out
+      plot(simDat2$N)
+            r0[l, ] <- simDat2$S_I_out
+            r02[l, ] <- simDat2$L_I_out
 
 
       simDat3 <- merge(simDat2,
@@ -212,14 +218,20 @@ modPlotFuncX <-
 
 
     r0M <- melt(t(r0))
+    r0M$LI <- melt(t(r02))$value
+
     r0M$Date <-
       seq(as.Date("2013-06-04"), as.Date("2014-06-03"), "days")
 
 
     gRT <- ggplot(r0M, aes(x = Date, y = value, group = Var2)) +
       geom_line(col = "purple",
-                size = .5,
+                size = 1,
                 alpha = .2) +
+      geom_line( y = r0M$LI,col = "orange",
+                size = 1,
+                alpha = .2) +
+      ylim(0,max(c(r0M$LI,r0M$value),na.rm = T))+
       xlab("Date") +
       ylab("New cases daily") +
       theme_bw(base_size = 20) +
@@ -470,7 +482,7 @@ addPulse<-function(g1,params,plotDat,birthType,datesX){
 
   if(params$c_val2==1){
   ePulse<-params$c_val2 * exp(-params$S2_val*(cos(3.141593*(yday(seq(as.Date("2013-06-04"), as.Date("2014-06-03"), "days"))/365) - params$Phi2_val))^2)
-  cutOff<-ifelse(params$epsilon_Val==0,0.003,0.1)
+  cutOff<-ifelse(params$epsilon_Val==0,0.05,0.01)
   ePulseVals<-as.data.frame(ePulse[ePulse>cutOff])
   ePulseVals$tile<-ntile(ePulseVals, 8)
   ePulseVals$dates<-datesX[which(ePulse>cutOff)]
@@ -502,7 +514,7 @@ addPulse<-function(g1,params,plotDat,birthType,datesX){
                                                 ymin = -Inf,ymax = Inf),alpha = 0.01,fill = "blue")
 
 if(params$c_val2==1){
-  if(params$epsilon_Val==0|| birthType==1) {
+  if(params$epsilon_Val==0) {
 
 
 
@@ -525,6 +537,7 @@ if(params$c_val2==1){
 
   } else {
 
+    if(birthType==0){
   g1=g1 +   geom_rect( data = head(plotDat),aes(xmin = ePulseValsP$min[13],xmax = ePulseValsP$max[13],
                                                 ymin = -Inf,ymax = Inf),alpha = 0.08,fill = "green")
   g1=g1 +   geom_rect( data = head(plotDat),aes(xmin = ePulseValsP$min[14],xmax = ePulseValsP$max[14],
@@ -556,7 +569,28 @@ if(params$c_val2==1){
                                                 ymin = -Inf,ymax = Inf),alpha = 0.01,fill = "green")
   g1=g1 +   geom_rect( data = head(plotDat),aes(xmin = ePulseValsP$min[2],xmax = ePulseValsP$min[4],
                                                 ymin = -Inf,ymax = Inf),alpha = 0.005,fill = "white")
+    }
+    if(birthType==1){
 
+      g1=g1 +   geom_rect( data = head(plotDat),aes(xmin = ePulseValsP$max[6],xmax = ePulseValsP$max[4]+30,
+                                                    ymin = -Inf,ymax = Inf),alpha = 0.03,fill = "green")
+      g1=g1 +   geom_rect( data = head(plotDat),aes(xmin = ePulseValsP$max[6],xmax = ePulseValsP$max[4],
+                                                    ymin = -Inf,ymax = Inf),alpha = 0.03,fill = "green")
+      g1=g1 +   geom_rect( data = head(plotDat),aes(xmin = ePulseValsP$max[8],xmax = ePulseValsP$max[4]-30,
+                                                    ymin = -Inf,ymax = Inf),alpha = 0.03,fill = "green")
+      g1=g1 +   geom_rect( data = head(plotDat),aes(xmin = ePulseValsP$max[8],xmax = ePulseValsP$max[4]-60,
+                                                    ymin = -Inf,ymax = Inf),alpha = 0.01,fill = "green")
+
+      g1=g1 +   geom_rect( data = head(plotDat),aes(xmin = ePulseValsP$min[6],xmax = ePulseValsP$max[8]-230,
+                                                    ymin = -Inf,ymax = Inf),alpha = 0.01,fill = "green")
+      g1=g1 +   geom_rect( data = head(plotDat),aes(xmin = ePulseValsP$min[6],xmax = ePulseValsP$max[8]-260,
+                                                    ymin = -Inf,ymax = Inf),alpha = 0.01,fill = "green")
+      g1=g1 +   geom_rect( data = head(plotDat),aes(xmin = ePulseValsP$min[6],xmax = ePulseValsP$max[8]-290,
+                                                    ymin = -Inf,ymax = Inf),alpha = 0.02,fill = "green")
+
+
+
+    }
   }
 }
 

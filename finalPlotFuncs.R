@@ -1,9 +1,11 @@
-install.packages("miscTools")
-install.packages("ggpubr")
-install.packages("binom")
-install.packages("reshape2")
-install.packages("loo")
-install.packages("ggplot2")
+library("miscTools")
+library("ggpubr")
+library("binom")
+library("reshape2")
+library("loo")
+library("ggplot2")
+library(miscTools)
+library(reshape2)
 
 ##File locations##
 if(Sys.info()['sysname']=="Darwin"){
@@ -18,28 +20,28 @@ if(Sys.info()['sysname']=="Darwin"){
 }
 prmLst<-prmLstFunc(prmFileLoc)
 
+#location of pMCMC results
+resultsFile<-"D:\\Cambridge\\results\\aug21\\res_"
+prmFile<-read.csv("D:\\ModelSetups.csv")#read in model setups
+saveLoc<-"/Users/alm204/OneDrive/Cambridge/Projects/model_comparisons/figures/" #location to save figures
+burn<-100000 #any additional burning
+modNums<-c(1:7,24)#model numbers to plot (see model setups table, prmFile)
+thin=10 #any thinning, if using rds files, set to 0 as these are already thinned
 
-resultsFile<-"/Users/alm204/Documents/Cambridge/results/jul20/res_"
-prmFile<-read.csv("/Users/alm204/Documents/ModelSetups.csv")#read in model setups
-saveLoc<-"/Users/alm204/OneDrive/Cambridge/Projects/model_comparisons/figures/"
-burn<-11000
-modNums<-c(1:8)#model numbers to plot (see model setups table, prmFile)
 #Plot Rt values
-plotAllRt(fileLoc= resultsFile,Rt=T,saveLoc=saveLoc,burn=burn,modNums=modNums,prmFile=prmFile)
-#Plot fitted simulat
-plotAllRt(fileLoc= resultsFile,Rt=F,saveLoc=saveLoc,burn=burn,modNums=modNums,prmFile=prmFile)
-plotEnvForc(resultsFile= resultsFile,burn=burn,modNums=modNums,saveLoc=saveLoc,prmFile=prmFile)
+plotAllRt(resultsFile= resultsFile,Rt=T,saveLoc=saveLoc,burn=burn,modNums=modNums,prmFile=prmFile,thin)
+#Plot fitted simulation
+plotAllRt(resultsFile= resultsFile,Rt=F,saveLoc=saveLoc,burn=burn,modNums=modNums,prmFile=prmFile,thin)
+plotEnvForc(resultsFile= resultsFile,burn=burn,modNums=modNums,saveLoc=saveLoc,prmFile=prmFile,thin)
 #run function to obtain looic vals, R0's, contributing bats etc
-parmVals<-looicFunc(resultsFile=resultsFile,prmFile=prmFile,burn=burn,samples=0,prmLst=prmLst)
+parmVals<-looicFunc(resultsFile=resultsFile,prmFile=prmFile,burn=burn,samples=0,prmLst=prmLst,thin)
 
 #parmVals<-readRDS("/Users/alm204/Documents/looDat.rds")
-
 looicVal<-parmVals[[1]]
 zetaS<-parmVals[[5]]
 zetaP<-parmVals[[4]]
 contBats<-parmVals[[3]]
-#plotLooic(r0Val,type="R0")
-#plotLooic(contBats,type="batCont")
+
 fNm<-"/Users/alm204/OneDrive/Cambridge/Projects/model_comparisons/figures/"
 
 p1<-plotLooic(fileNme=paste0(fNm,"looicVals.png"),loicVals=looicVal,type="loo")
@@ -58,3 +60,5 @@ ggsave(
   width = 40,
   units = "cm"
 )
+
+

@@ -59,6 +59,9 @@ modStepJI <- function(particles,mod,birthType,startTime,endTime) {
 detModFunc<-function(params,obsData,assump,likelihoodFunc,birthType){
   currentTime=obsData$NumDays[1]
   nextTime=obsData$NumDays[nrow(obsData)]
+
+
+#Some parameter values log10 is used to keep them on a similar scale to other parameters, makes fitting easier
   params$kappa_Val<-10^params$kappa_Val
 
   initialState<- as.data.frame(iState(prms=params,n=2))[1,]
@@ -72,8 +75,6 @@ detModFunc<-function(params,obsData,assump,likelihoodFunc,birthType){
     params$gamma_2_Val<-ifelse(params$gamma_2_Val>-1,10^params$gamma_2_Val,-1)
   }
 
-  #calculate mu from juvenile lifespan and mat immune waning (juv stage of ~ 15.55 months)
-  params$mu_Val<- 1/((15.55/12) - (1/params$omega_m_Val))
 
   mod <-
     detSEIR(

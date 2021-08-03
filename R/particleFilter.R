@@ -58,7 +58,6 @@ pFilt <-
     }
 
     #calculate mu from juvenile lifespan and mat immune waning
-    params$mu_Val<- 1/((15.55/12) - (1/params$omega_m_Val))
 
 
     mod <-
@@ -96,7 +95,7 @@ pFilt <-
       startTime <- times[i]
       endTime <- times[i + 1]
       #use mapply with low particle numbers as overheads not worth it - currently using parralel for multi models
-      if (n < 50) {
+      if (n < 100) {
         particlesTemp = mapply(
           stepFun,
           particles = as.list(as.data.frame(t(particles))),

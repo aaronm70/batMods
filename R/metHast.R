@@ -131,7 +131,7 @@ betaMean<-function(params){
 
 #' pMCMCsampler
 #' @param initial parameter guess
-#' @param randInit T then randomly sample initial parameters instead of initParams value
+#' @param randInit randomly sample initial parameters instead of initParams value - obsolete
 #' @param proposer proposal function, multivariate block (adaptiveMCMC must = T) or sequential can have adaptive or not adaptive tuning
 #' @param sdProps standard deviation for proposal distributions - in adaptive this is the starting sd
 #' @param maxSddProps maximum values for sd proposals if using adaptive MCMC
@@ -208,6 +208,9 @@ if(is.null(initParams$lFunc)!=T )likelihoodFunc<-initParams$lFunc else print("No
   currentParams$betaFXVal<-if(currentParams$betaFX==1) betaMean(currentParams) else 0
   ##calc scaling factor
   currentParams$c_Val<- scalarFunc(currentParams,currentParams$m_Val,currentParams$mu_Val,b,currentParams$omega_m_Val,currentParams$mj_Val,currentParams$s_Val,phi = 0)
+ #calculate maturation rate, based on fixed juvenile stage (15.5 months) and current maternal immune waning
+   currentParams$mu_Val<- 1/((15.55/12) - (1/currentParams$omega_m_Val))
+   #the difference between the time it takes from birth to reach adulthood and time it takes for maternal immunity to wane
 
 
 
@@ -219,7 +222,7 @@ if(is.null(initParams$lFunc)!=T )likelihoodFunc<-initParams$lFunc else print("No
     curValX <- as.vector(detModFunc(params=currentParams,obsData=oDat,assump=assump,likelihoodFunc=likelihoodFunc,birthType=birthType))
   }
 
-  #curvalX is pointwise output
+  #curvalX is pointwise output for loo-cv comparison
   curVal<-sum(curValX)+priorFunc(currentParams)
 
   curVal[is.na(curVal)]<--10000000
@@ -236,14 +239,12 @@ if(is.null(initParams$lFunc)!=T )likelihoodFunc<-initParams$lFunc else print("No
 
   while (iter <= niter) {
 
-
-
 if (iter >= switch)  stoch= T else stoch =F
 if (iter == switch)  curVal= -1000000 else curVal =curVal
 if (iter >= switchBlock)  proposerType= "block" else proposerType ="seq"
 if (iter >= switchBlock)  proposer= multiv.proposer else proposer = sequential.proposer
 
-    ##var covar matrix update - currently every 50 iterations
+    ##var covar matrix update - currently every 50 iterations - only used if block proposals switched on
     if (adaptiveMCMC == T &
         proposerType == 'block' & iter > startAdapt & iter %% 50 == 0) {
       ##modulur division of 50, update covar every 50 iterations
@@ -284,8 +285,10 @@ if (iter >= switchBlock)  proposer= multiv.proposer else proposer = sequential.p
         proposer(currentParams, prmNum, sdp)
     }
 
+#Scalar function for birth pulse and calculation of maturation rate from juvenile stage length and maternal immune waning
 proposal$c_Val<- scalarFunc(proposal,proposal$m_Val,proposal$mu_Val,b,proposal$omega_m_Val,proposal$mj_Val,proposal$s_Val,phi = 0)
 proposal$betaFXVal<-if(proposal$betaFX==1) betaMean(proposal) else 0
+proposal$mu_Val<- 1/((15.55/12) - (1/proposal$omega_m_Val))
 
 
     if(proposerType=="block" || maxSddProps[prmNum]!=0){
@@ -360,7 +363,8 @@ proposal$betaFXVal<-if(proposal$betaFX==1) betaMean(proposal) else 0
       prmNum <-1#if parameter number reaches end of parameters, switch back to start
 
 
-    if(iter %% 10000 == 0) write.csv(as.mcmc(out[1:iter > (nburn + 1),]),paste0("/home/aaron/res_",modNum,".csv"))
+    #print results at current stage to file
+    if(iter %% 10000 == 0) write.csv(as.mcmc(out[1:iter > (nburn + 1),]),paste0(modNum,".csv"))
     if(iter %% 10000 == 0) gc()
      }
 
