@@ -17,6 +17,7 @@ lpriorBoonah <- function(parms) with(parms, {
   phi_prior<-dnorm(parms$phi_Val,mean=7.18,sd=0.1,log=T)
   #mu_Val_prior<-dnorm(parms$mu_Val ,mean=1.37,sd=0.02,log=T)
 
+
   # sigmaProbPrior<-dunif(parms$sigmaVerProbVal,min=0.01,max=0.99,log=T)
   oDist_uPrior<-dunif(parms$oDist_u,min=0,max=10,log=T)
 
