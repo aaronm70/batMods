@@ -63,10 +63,6 @@ library(furrr)
 
 #odin_package("C:\\Users\\aaron\\Documents\\batMods\\batMods")
 
-
-
-#plan(multisession)
-
 prmLst<-list(prmLst[[2]],prmLst[[4]],prmLst[[7]],prmLst[[8]])
 prmLst[[1]]$modNum<-2
 prmLst[[2]]$modNum<-4
@@ -74,7 +70,7 @@ prmLst[[3]]$modNum<-7
 prmLst[[4]]$modNum<-8
 
 
-##fit using custom pMCMC - generally switching to BayesianTools for a more simple life
+##fit using pMCMC
 library(future.apply)
 iters=1000000
 plan(multisession)
@@ -85,7 +81,7 @@ gg<-future_mapply(mcmcSampler,initParams=prmLst,MoreArgs = list( #fit to one of 
              sdProps=NULL,
              maxSddProps=NULL,
              niter=iters,
-             particleNum=35,
+             particleNum=100,
              proposer = sequential.proposer,
              proposerType = "seq",
              startAdapt = 20000,
