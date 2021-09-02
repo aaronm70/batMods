@@ -25,6 +25,12 @@ prmFileLoc="data\\ModelSetups.csv"
 
 }
 
+#library(MCMCvis)
+#ff1<-(read.csv("C:\\Users\\aaron\\Documents\\batMods\\chain2\\4.csv"))
+#ff2<-(read.csv("C:\\Users\\aaron\\Documents\\batMods\\chain2\\12.csv"))
+#ff<-mcmc.list(as.mcmc(ff1[1:429998,],thin=10),as.mcmc(ff2[1:429998,],thin=10))
+#MCMCvis::MCMCtrace(ff,iter=100000)
+#
 
 #read in bat data for boonah
 obsDataBoonah<-boonahDatFunc(ret="obs",species="BFF",fileLoc=fileLoc)
@@ -77,7 +83,7 @@ plan(multisession)
 
 
 
-gg<-future_mapply(mcmcSampler,initParams=prmLst,MoreArgs = list( #fit to one of the model structures
+gg<-mcmcSampler(initParams=prmLst[[4]], #fit to one of the model structures
              sdProps=NULL,
              maxSddProps=NULL,
              niter=iters,
@@ -96,6 +102,6 @@ gg<-future_mapply(mcmcSampler,initParams=prmLst,MoreArgs = list( #fit to one of 
              priorFunc=lpriorBoonah,
              switch=500000,
              switchBlock = 1000000000,
-             juvenileInfection=F))
+             juvenileInfection=F)
 
 saveRDS(gg,"results1Mil.RDS")

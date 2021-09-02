@@ -9,15 +9,14 @@ plotLooic <- function(fileNme,
   loicVals$Structure[loicVals$Structure == 2] <- "No EF"
   loicVals$Structure[loicVals$Structure == 3] <- "DC"
   loicVals$modType[loicVals$modType == 3] <- "SIRS"
-  loicVals$modType[loicVals$modType == 2] <- "SIR"
   loicVals$modType[loicVals$modType == 1] <- "SILI"
 
-  loicVals2$Structure[loicVals2$Structure == 1] <- "EF"
-  loicVals2$Structure[loicVals2$Structure == 2] <- "No EF"
-  loicVals2$Structure[loicVals2$Structure == 3] <- "DC"
-  loicVals2$modType[loicVals2$modType == 3] <- "SIRS"
-  loicVals2$modType[loicVals2$modType == 2] <- "SIR"
-  loicVals2$modType[loicVals2$modType == 1] <- "SILI"
+ # loicVals2$Structure[loicVals2$Structure == 1] <- "EF"
+ # loicVals2$Structure[loicVals2$Structure == 2] <- "No EF"
+ # loicVals2$Structure[loicVals2$Structure == 3] <- "DC"
+ # loicVals2$modType[loicVals2$modType == 3] <- "SIRS"
+ # loicVals2$modType[loicVals2$modType == 2] <- "SIR"
+ # loicVals2$modType[loicVals2$modType == 1] <- "SILI"
 
   loicVals[,1]<-as.numeric(loicVals[,1])
   loicVals[,2]<-as.numeric(loicVals[,2])
@@ -29,8 +28,8 @@ plotLooic <- function(fileNme,
   }
 
 
-  loicVals$location <- c(4, 1, 5, 2, 7, 8, 10, 11)
-  loicVals2$location <- c(4, 1, 5, 2, 7, 8, 10, 11)
+  loicVals$location <- c(4, 2, 6)
+  #loicVals2$location <- c(4, 1, 5, 2, 7, 8, 10, 11)
 
   if (type == "loo")
     yName <- "Looic"
@@ -67,8 +66,8 @@ plotLooic <- function(fileNme,
     ylab(yName) +
     scale_fill_viridis_d(option = "C", direction = -1) +
     scale_x_continuous(
-      breaks = c(1.5, 4.5, 7.5, 10.5),
-      labels = c("SILI (Mat. im.)", "SILI", "SIR", "SIRS")
+      breaks = c(2, 4, 6),
+      labels = c("SILI","SILI", "SIRS")
     ) +  theme_bw(base_size = 20) +
     panel_border(size = 0.5, color = "black") +
     scale_color_viridis_d(option = "D") +

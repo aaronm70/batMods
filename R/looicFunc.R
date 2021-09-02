@@ -16,7 +16,7 @@
     zetaU<-NULL
     zetaS<-NULL
 
-for(i in c(1:7,24)){
+for(i in c(2,4,8)){
   print(i)
   gg<-readResFunc(fileLoc=resultsFile,i=i,burn=burn,prmFile=prmFile,thin=10,end=300000)
 median(gg$ll)
@@ -29,7 +29,7 @@ i<-if(i == 24) 8 else i
     looTmp<-calc.loo(gg)
 
   print(looTmp[[1]])
-  write.csv(c(looTmp$estimates,looTmp$diagnostics$pareto_k),paste0("/Users/alm204/Documents/test",i,".csv"))
+  write.csv(c(looTmp$estimates,looTmp$diagnostics$pareto_k),paste0("C:\\Users\\aaron\\Documents\\batMods\\test\\",i,".csv"))
   nam <- paste("Mod", i, sep = "")
   assign(nam, looTmp)
 
@@ -59,7 +59,7 @@ i<-if(i == 24) 8 else i
     zetaS$mod<-c(1:nrow(zetaS))
 
     looData<-list(looicVal,r0Val,contBats,zetaP,zetaU,zetaS)
-    saveRDS(looData, file = "/Users/alm204/Documents/looDat.rds")
+    saveRDS(looData, file = "C:\\Users\\aaron\\Documents\\batMods\\looDat.rds")
 
     return(looData)
   }

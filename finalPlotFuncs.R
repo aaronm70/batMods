@@ -6,6 +6,7 @@ library("loo")
 library("ggplot2")
 library(miscTools)
 library(reshape2)
+library(cowplot)
 
 ##File locations##
 if(Sys.info()['sysname']=="Darwin"){
@@ -13,19 +14,19 @@ if(Sys.info()['sysname']=="Darwin"){
   fileLocUrine="/Users/alm204/OneDrive/emma aaron/data/Boonah/henrda-underRoostUrine.csv"
   prmFileLoc="/Users/alm204/Documents/ModelSetups.csv"
 }else{
-  fileLoc="/home/aaron/hendra-virus-test-results-flying-foxes.csv"
-  fileLocUrine="/home/aaron/henrda-underRoostUrine.csv"
-  prmFileLoc="/home/aaron/ModelSetups.csv"
+  fileLoc="C:\\Users\\aaron\\Documents\\batMods\\batMods\\data\\hendra-virus-test-results-flying-foxes.csv"
+  fileLocUrine="C:\\Users\\aaron\\Documents\\batMods\\batMods\\data\\henrda-underRoostUrine.csv"
+  prmFileLoc="C:\\Users\\aaron\\Documents\\batMods\\batMods\\data\\ModelSetups.csv"
 
 }
 prmLst<-prmLstFunc(prmFileLoc)
 
 #location of pMCMC results
-resultsFile<-"D:\\Cambridge\\results\\aug21\\res_"
-prmFile<-read.csv("D:\\ModelSetups.csv")#read in model setups
-saveLoc<-"/Users/alm204/OneDrive/Cambridge/Projects/model_comparisons/figures/" #location to save figures
+resultsFile<-"C:\\Users\\aaron\\Documents\\batMods\\chain2\\"
+prmFile<-read.csv("C:\\Users\\aaron\\Documents\\batMods\\batMods\\data\\ModelSetups.csv")#read in model setups
+saveLoc<-"C:\\Users\\aaron\\Documents\\batMods\\figures\\" #location to save figures
 burn<-100000 #any additional burning
-modNums<-c(1:7,24)#model numbers to plot (see model setups table, prmFile)
+modNums<-c(2,4,8)#model numbers to plot (see model setups table, prmFile)
 thin=10 #any thinning, if using rds files, set to 0 as these are already thinned
 
 #Plot Rt values
@@ -42,7 +43,7 @@ zetaS<-parmVals[[5]]
 zetaP<-parmVals[[4]]
 contBats<-parmVals[[3]]
 
-fNm<-"/Users/alm204/OneDrive/Cambridge/Projects/model_comparisons/figures/"
+fNm<-"C:\\Users\\aaron\\Documents\\batMods\\figures\\"
 
 p1<-plotLooic(fileNme=paste0(fNm,"looicVals.png"),loicVals=looicVal,type="loo")
 p2<-plotLooic(fileNme=paste0(fNm,"contBatsX.png"),loicVals=contBats,type="batCont")

@@ -5,7 +5,7 @@
 ##plot environmental force
 plotEnvForc <- function(resultsFile,burn,modNums,saveLoc,prmFile,thin=10) {
   for (i in modNums) {
-    prmFile <- read.csv("/Users/alm204/Documents/ModelSetups.csv")
+    #prmFile <- read.csv("/Users/alm204/Documents/ModelSetups.csv")
 
     gg<-readResFunc(fileLoc=resultsFile,i=i,burn=burn,prmFile=prmFile,thin=thin)
     i<-if(i == 24) 8 else i
@@ -126,9 +126,9 @@ plotEnvForc <- function(resultsFile,burn,modNums,saveLoc,prmFile,thin=10) {
 
   }
   ggRt <-
-    ggarrange(G4 + ggtitle("A) SILI (Maternal Immunity)"),
-              G3 + ggtitle("B) SILI"),
-              G6 + ggtitle("C) SIR"),
+    ggarrange(G4 + ggtitle("A) SILI"),
+            #  G3 + ggtitle("B) SILI"),
+             # G6 + ggtitle("C) SIR"),
               G8 + ggtitle("D) SIRS"),
               common.legend = T)
   print(ggRt)
